@@ -1,0 +1,21 @@
+# CTBU-STA 官网 robots.txt · 由 tools/gen_seo.py 自动生成
+# 适用搜索引擎：Googlebot（谷歌）、Baiduspider（百度）、Bingbot（必应）、Sogou web spider（搜狗）、360Spider（360 搜索）、YandexBot（俄罗斯）、DuckDuckBot、Applebot
+# （User-agent: * 为通配规则，覆盖上表全部主流爬虫）
+
+User-agent: *
+Allow: /
+
+# 屏蔽无实际内容的路径
+Disallow: /404.html
+Disallow: /tools/
+Disallow: /assets/
+Disallow: /dist/
+Disallow: /build/
+Disallow: /node_modules/
+Disallow: /*.json$
+Disallow: /*.md$
+Disallow: /*.map$
+Disallow: /*.log$
+
+# 站点地图
+Sitemap: https://tchao8820.github.io/ctbu-kexie-website/sitemap.xml

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>404 · 页面不存在 — 重庆工商大学科技协会</title>
+<style>
+:root{
+  --blue:#0B5FFF; --blue-d:#0847C4; --cyan:#06B6D4; --cyan-l:#67E8F9;
+  --ink:#0B1524; --ink2:#334155; --sub:#64748B; --line:#E2E8F0;
+  --bg:#F6F8FC; --card:#FFFFFF; --navy:#0A1628; --navy2:#123A5A;
+  --mono:"SF Mono","Cascadia Mono",Consolas,"Liberation Mono",Menlo,monospace;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  --r:14px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--bg);color:var(--ink2);font-family:var(--sans);
+  -webkit-font-smoothing:antialiased;min-height:100vh;display:flex;flex-direction:column;
+}
+a{color:var(--blue);text-decoration:none}
+a:hover{text-decoration:underline}
+.wrap{max-width:760px;margin:0 auto;padding:0 24px;width:100%}
+
+header{background:var(--navy);border-bottom:1px solid rgba(255,255,255,.08)}
+.hd-in{max-width:760px;margin:0 auto;padding:0 24px;height:66px;display:flex;align-items:center;gap:12px}
+.brand{display:flex;align-items:center;gap:11px;color:#fff}
+.brand .mk{
+  width:34px;height:34px;border-radius:9px;flex:0 0 auto;
+  background:linear-gradient(135deg,var(--blue),var(--cyan));
+  display:grid;place-items:center;font-family:var(--mono);font-weight:700;font-size:12px;color:#fff;
+}
+.brand b{font-size:15px;color:#fff;font-weight:700;line-height:1.25;display:block}
+.brand em{font-style:normal;font-family:var(--mono);font-size:10.5px;color:#8FA6C4;letter-spacing:.13em}
+
+main{flex:1 1 auto;display:flex;align-items:center;padding:56px 0 72px}
+.card{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--r);
+  padding:40px 34px;box-shadow:0 1px 2px rgba(11,21,36,.05),0 8px 24px -12px rgba(11,21,36,.14);
+  text-align:center;
+}
+.code{
+  font-family:var(--mono);font-size:64px;font-weight:700;line-height:1;
+  background:linear-gradient(135deg,var(--blue),var(--cyan));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  letter-spacing:-.03em;margin-bottom:6px;
+}
+h1{margin:0 0 10px;font-size:23px;color:var(--ink);font-weight:700;letter-spacing:-.01em}
+.lead{margin:0 auto 26px;font-size:15.5px;color:var(--sub);max-width:52ch;line-height:1.75}
+
+.links{
+  display:flex;flex-wrap:wrap;gap:9px;justify-content:center;
+  padding-top:24px;border-top:1px solid var(--line);
+}
+.links a{
+  padding:8px 14px;border-radius:9px;font-size:14px;
+  background:#EEF3FF;border:1px solid #D6E3FF;color:var(--blue-d);
+}
+.links a:hover{background:#E2EBFF;text-decoration:none}
+.links a.pri{
+  background:linear-gradient(135deg,var(--blue),#3B82F6);color:#fff;border-color:transparent;
+}
+.links a.pri:hover{filter:brightness(1.06)}
+
+.hint{
+  margin-top:22px;font-family:var(--mono);font-size:12px;color:var(--sub);
+  word-break:break-all;line-height:1.7;
+}
+
+footer{background:var(--navy);color:#8FA6C4;padding:22px 0;font-size:13px;text-align:center}
+footer a{color:#9EC1FF}
+
+@media (max-width:520px){
+  .card{padding:30px 20px}
+  .code{font-size:48px}
+  h1{font-size:19px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hd-in">
+    <a class="brand" href="./" aria-label="返回科技协会官网首页">
+      <span class="mk">STA</span>
+      <span>
+        <b>重庆工商大学科技协会</b>
+        <em>CTBU · SCIENCE &amp; TECHNOLOGY ASSOCIATION</em>
+      </span>
+    </a>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="card">
+      <div class="code">404</div>
+      <h1>这个页面走丢了</h1>
+      <p class="lead">
+        你访问的地址不存在，或者已经被移动到别处了。
+        可以直接回到首页，或者从下面的入口继续浏览协会的内容。
+      </p>
+
+      <nav class="links" aria-label="站点导航">
+        <a class="pri" href="./">回到首页</a>
+        <a href="./#about">协会简介</a>
+        <a href="./#history">发展历程</a>
+        <a href="./#org">组织架构</a>
+        <a href="./#activity">活动展示</a>
+        <a href="./#results">成果数据</a>
+        <a href="./#news">新闻动态</a>
+        <a href="./#join">加入我们</a>
+        <a href="./#contact">联系方式</a>
+      </nav>
+
+      <p class="hint" id="p"></p>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    重庆工商大学科技协会 · 机械工程学院指导 &nbsp;|&nbsp;
+    <a href="./#contact">联系我们</a>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var el=document.getElementById('p');
+  if(el){ try{ el.textContent='未找到：'+location.pathname; }catch(e){} }
+})();
+</script>
+</body>
+</html>
