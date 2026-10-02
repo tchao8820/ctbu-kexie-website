@@ -53,6 +53,43 @@ README.md         本说明
 - 站内 `#about` 这类锚点是**页内导航**，不构成独立可索引 URL，因此不进 sitemap
   （这也是 Google 的明确要求：sitemap 中的 URL 不得含 fragment）
 
+### ⚠️ 当前 robots.txt 的一处限制（重要）
+
+爬虫**只读主机根目录的 robots.txt**。Google 官方文档明确：
+`https://example.com/robots.txt` 有效，而 `https://example.com/folder/robots.txt`
+「不是有效的 robots.txt 文件，抓取工具不会检查子目录中的 robots.txt」。
+
+本站现在位于 `https://tchao8820.github.io/ctbu-kexie-website/`，
+即项目页位于**子路径**，所以：
+
+| 项 | 现状 | 说明 |
+|---|---|---|
+| `Allow: /`（允许抓取） | 实际已生效 | 主机根 `https://tchao8820.github.io/robots.txt` 返回 404，等于「无限制」 |
+| `Disallow:` 各条 | **暂不生效** | 子路径下的规则不会被读取 |
+| `Sitemap:` 声明 | **暂不自动发现** | 需手动提交（见下） |
+
+**三种解决方式**（任一即可）：
+
+1. **绑定自定义域名（推荐）** —— 绑好后本站就位于域名根目录，
+   `https://你的域名/robots.txt` 立即全部生效。见下一节。
+2. **建一个用户站仓库** `tchao8820.github.io`，里面只放一份 robots.txt，
+   它就会成为 `tchao8820.github.io` 主机根目录的 robots.txt，覆盖所有项目页：
+
+   ```bash
+   # 新建仓库 tchao8820.github.io（公开），根目录放 robots.txt：
+   #   User-agent: *
+   #   Allow: /
+   #   Disallow: /ctbu-kexie-website/404.html
+   #   Sitemap: https://tchao8820.github.io/ctbu-kexie-website/sitemap.xml
+   ```
+
+3. **什么都不做** —— 影响很小：`404.html` 已带 `<meta name="robots" content="noindex,nofollow">`，
+   索引层面已被挡住；sitemap 手动提交一次也能被收录。
+
+> 手动提交 sitemap（免费，各平台一次即可）：
+> Google Search Console / Bing Webmaster Tools / 百度搜索资源平台，添加站点后提交
+> `https://tchao8820.github.io/ctbu-kexie-website/sitemap.xml`
+
 ## 自定义域名
 
 **步骤概览**（详细 DNS 记录类型、TXT 验证、证书签发与排错见 `CNAME.example`）：
@@ -81,6 +118,24 @@ git add -A && git commit -m "chore: 切换到自定义域名" && git push
 - `sitemap.xml`：全部 `<loc>`
 - `robots.txt`：`Sitemap:` 行
 - `CNAME`：按需生成
+
+### 免费域名从哪来
+
+| 渠道 | 拿到什么 | 特点 | 建议 |
+|---|---|---|---|
+| **GitHub 学生包** | Namecheap 免费 `.me` 域名 1 年（另有 `.tech` 1 年、Name.com 25+ 后缀可选） | **真正的顶级域名**，可自由转移、自带 SSL | ⭐ 首选，用 edu.cn 邮箱或学信网证明认证 |
+| **EU.org** | `xxx.eu.org` | 1996 年运营至今，免费终身，支持完整 DNS | 次选，审核 1–4 周 |
+| **FreeDNS (afraid.org)** | `xxx.mooo.com` 等公共子域 | 注册快，免费版限 50 条记录 | 临时用 |
+| **DuckDNS** | `xxx.duckdns.org` | 秒开，主要用于家宽动态 IP | 不推荐绑站点 |
+| No-IP | `xxx.ddns.net` | 需每 30 天手动确认一次 | 不推荐 |
+| ~~Freenom~~ | ~~`.tk/.ml/.ga`~~ | **已停止新注册**，勿用 | 避开 |
+
+其余免费「域名」本质是平台子域：`*.pages.dev`（Cloudflare）、`*.vercel.app`、
+`*.netlify.app` —— 换了等于换托管，与 GitHub Pages 无关。
+
+> GitHub Pages 要求自定义域名**在整个 GitHub Pages 体系内唯一**。
+> 免费共享子域（如 DuckDNS）实践中有绑定失败的案例，权威做法是用你能完全控制
+> DNS 的域名（学生 `.me` 或 `xxx.eu.org`）。
 
 ## 关联的其它发布通道
 
