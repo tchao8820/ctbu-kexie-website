@@ -139,15 +139,49 @@ git add -A && git commit -m "chore: 切换到自定义域名" && git push
 
 ## 关联的其它发布通道
 
-同一份 `index.html` 同时发布在另外两条通道，互为备份：
+同一份 `index.html` 同时发布在多处，互为备份：
 
 | 通道 | 地址 | 状态 |
 |---|---|---|
-| GitHub Pages | `https://tchao8820.github.io/ctbu-kexie-website/` | 主通道 |
-| WorkBuddy 托管 | `https://ctbu-sta.app.workbuddy.host/` | 可用 |
-| EdgeOne Makers | 项目 `ctbu-kexie-website` | 已部署，预览链接 3 小时过期，需绑已备案域名才能稳定访问 |
+| GitHub Pages | `https://tchao8820.github.io/ctbu-kexie-website/` | ✅ 主通道（canonical 指向此处） |
+| WorkBuddy 托管 | `https://ctbu-sta.app.workbuddy.host/` | ✅ 可用 |
+| Gitee Pages | `https://tong-chao8864.gitee.io/ctbu-kexie-website/` | ⏳ 待开通（仓库建成后一键推送） |
+| EdgeOne Makers | 项目 `ctbu-kexie-website` | ⚠️ 预览链接 3 小时过期，需绑已备案域名 |
 
 任一通道故障时，其余通道仍可正常访问。
+
+### Gitee Pages（国内访问通道）
+
+Gitee 有对标 GitHub Pages 的 **Gitee Pages**，免费、服务器在国内，国内访问速度明显优于 GitHub Pages。
+本站 `gitee` 远端已配好（`git@gitee.com:tong-chao8864/ctbu-kexie-website.git`，SSH 已验证连通）。
+
+**与 GitHub Pages 的关键差异**（决定了怎么用它）：
+
+| 项 | GitHub Pages | Gitee Pages |
+|---|---|---|
+| 仓库要求 | 公开 | **必须公开**，且账号需**实名认证** |
+| 自动部署 | push 后自动生效 | **每次 push 必须回后台点「更新」** |
+| 默认地址 | `用户名.github.io/仓库名` | `用户名.gitee.io/仓库名` |
+| 自定义域名 | 免备案即可 | **需域名已 ICP 备案** |
+| HTTPS | Let's Encrypt 自动签发 | 以控制台页面提示为准 |
+| 内容审核 | 无 | 有合规审核，禁止违规内容与商业广告 |
+
+**开通步骤（人工，共 3 步）**
+
+1. 在 Gitee 网页新建**公开**仓库 `ctbu-kexie-website`（**不要勾选初始化 README**，保持空仓库）
+2. 首次使用按提示完成**实名认证**（通常 1 个工作日内审核）
+3. 本地推送并开通服务：
+
+```bash
+cd F:/科技协会官网/github-pages
+git push gitee main                       # 推送镜像
+# 然后浏览器：仓库 → 服务 → Gitee Pages → 分支选 main、目录选 / → 点「启动」
+```
+
+之后每次更新内容，都要 **push 后再回 Gitee Pages 页面点一次「更新」**（免费版不会自动重新部署）。
+
+> SEO 口径：Gitee 只是镜像，**`canonical` 与 sitemap 仍统一指向 GitHub Pages**，
+> 不改域名相关文件，避免两站重复内容分散权重。
 
 ## 内容来源与免责说明
 
