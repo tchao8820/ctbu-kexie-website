@@ -8,7 +8,6 @@ Allow: /
 # 屏蔽无实际内容的路径
 Disallow: /404.html
 Disallow: /tools/
-Disallow: /assets/
 Disallow: /dist/
 Disallow: /build/
 Disallow: /node_modules/

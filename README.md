@@ -9,11 +9,12 @@
 ## 仓库内容
 
 ```
-index.html        官网全部内容（单文件，含内联样式、脚本与 base64 图片）
+index.html        官网全部内容（单文件，含内联样式与脚本；图片为外链）
 404.html          自定义 404 错误页（GitHub Pages 自动启用，已被 robots 屏蔽）
 sitemap.xml       站点地图（自动生成，勿手工编辑）
 robots.txt        爬虫规则 + sitemap 声明（自动生成，勿手工编辑）
 og-image.png      社交分享卡片 1200×630（微信 / QQ / Twitter 预览用）
+assets/img/       站点图片资源（11 个文件，由 index.html 引用）
 CNAME.example     CNAME 文件模板，绑定自定义域名时参考（当前未启用）
 .nojekyll         阻止 GitHub Pages 走 Jekyll 构建，保证原样发布
 tools/gen_seo.py        扫描发布目录，自动生成 sitemap.xml 与 robots.txt
@@ -21,18 +22,52 @@ tools/set_site_url.py   换域名时一键同步全部域名相关位置
 README.md         本说明
 ```
 
-官网为**单文件静态站点**：零外部请求、零接口调用、零构建步骤、无需任何环境变量，
+官网是**静态单页站点**：零接口调用、零构建步骤、无需任何环境变量，
 因此发布方式就是「把文件放好」，没有构建过程。
 
+### 为什么图片是外链而不是内嵌
+
+早期版本把全部图片以 base64 写进 `index.html`，且为实现点击放大灯箱，
+每张图在 `data-img` 与 `src` 两处各存一份完整数据。结果：
+
+| 问题 | 数值 |
+|---|---|
+| 单页体积 | 2.30 MB（gzip 后 1.70 MB，base64 几乎不可压缩） |
+| 重复内嵌 | 10 组图片字节完全相同，冗余 987 KB（占43.8%） |
+| `loading="lazy"` | **完全失效**——浏览器须下载整个文件才能解析 |
+| `fetchpriority="high"` | hero 图排在第 659 行，反成最后到达的资源，实测首字节 13.5 s |
+
+现已改为 `assets/img/` 下的独立文件 + 相对路径：
+
+| 指标 | 改前 | 改后 |
+|---|---|---|
+| `index.html` | 2,304,700 B | 约 93 KB |
+| 首屏传输 | 1.70 MB（gzip） | 约 93 KB + 首图 140 KB，且可并行 |
+| `loading="lazy"` | 无效 | 真正生效，滚动到才加载 |
+| 二次访问 | 重下 1.7 MB | 图片走独立缓存 |
+
+代价是「零外部请求」变为「有限外部请求」，这个取舍值得。
+另：favicon（64×64，8 KB）仍保持内联——图标极小，内联可省一次请求。
+
+> 图片重命名后请同步更新 `index.html` 中 `src` 与 `data-img` 两处引用，
+> 两者必须指向同一文件（灯箱直接读取 `data-img` 作为 `<img>` 的 src）。
+
 ## 如何更新内容
+
+> ⚠️ **本仓库只存发布产物，不含完整构建链。**
+> 下面步骤 1–2 依赖本机 `F:\科技协会官网\` 目录下的模板与 `build_site.py`
+> （未入库，因为含本机绝对路径）。换机器维护需先取得该目录。
 
 1. 修改源模板 `F:\科技协会官网\template.html`
 2. 在 `F:\科技协会官网\` 下重建：`python F:\.workbuddy\scan\build_site.py`
 3. 把新的 `index.html` 覆盖到本仓库根目录
-4. 重新生成 SEO 文件：`python tools/gen_seo.py`
-5. 提交并推送，GitHub Pages 会在 1–2 分钟内自动更新
+4. 若图片有增删改名，同步更新 `assets/img/`
+5. 重新生成 SEO 文件：`python tools/gen_seo.py`
+6. 提交并推送，GitHub Pages 会在 1–2 分钟内自动更新
 
 > 站点上线后 `lastmod` 想刷新，只需重跑 `tools/gen_seo.py`。
+> 改动图片后请自查：`grep -o 'assets/img/[^"]*' index.html | sort -u`
+> 列出的每个文件都必须真实存在，否则会出现破图。
 
 ## 搜索引擎优化
 
@@ -41,7 +76,7 @@ README.md         本说明
 | `sitemap.xml` | 向搜索引擎提交全部公开页面 | `python tools/gen_seo.py` |
 | `robots.txt` | 允许全站抓取 + 声明 sitemap + 屏蔽无内容路径 | 同上 |
 | `404.html` | 自定义错误页，避免默认 404 页被收录 | 手工维护 |
-| `og-image.png` | 分享预览图 | `python tools/make_og_image.py` |
+| `og-image.png` | 分享预览图1200×630 | 手工制作，当前仓库未收录其生成脚本 |
 
 生成器是**目录驱动**的：它遍历发布根目录里真实存在的 `.html` 文件，
 所以以后新增页面（如 `news/2026-10.html`）只要放进根目录，重跑脚本就会自动收录，
