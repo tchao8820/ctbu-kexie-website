@@ -88,42 +88,36 @@ README.md         本说明
 - 站内 `#about` 这类锚点是**页内导航**，不构成独立可索引 URL，因此不进 sitemap
   （这也是 Google 的明确要求：sitemap 中的 URL 不得含 fragment）
 
-### ⚠️ 当前 robots.txt 的一处限制（重要）
+### robots.txt 与主机根（已解决）
 
 爬虫**只读主机根目录的 robots.txt**。Google 官方文档明确：
 `https://example.com/robots.txt` 有效，而 `https://example.com/folder/robots.txt`
-「不是有效的 robots.txt 文件，抓取工具不会检查子目录中的 robots.txt」。
+→「不是有效的 robots.txt 文件，抓取工具不会检查子目录中的 robots.txt」。
 
-本站现在位于 `https://tchao8820.github.io/ctbu-kexie-website/`，
-即项目页位于**子路径**，所以：
+本站位于 `https://tchao8820.github.io/ctbu-kexie-website/`，位于**子路径**，
+因此本仓库内 `tools/gen_seo.py` 生成的 robots.txt 虽然能被下载，但爬虫不会读取。
 
-| 项 | 现状 | 说明 |
+**✅ 已解决**：已建立用户站仓库 [`tchao8820.github.io`](https://github.com/tchao8820/tchao8820.github.io)，
+其根目录的 `robots.txt` 即主机根文件，现返回 **HTTP 200**（此前为 404），
+对 `tchao8820` 名下所有 Pages 项目页生效。
+
+| 项 | 状态 | 说明 |
 |---|---|---|
-| `Allow: /`（允许抓取） | 实际已生效 | 主机根 `https://tchao8820.github.io/robots.txt` 返回 404，等于「无限制」 |
-| `Disallow:` 各条 | **暂不生效** | 子路径下的规则不会被读取 |
-| `Sitemap:` 声明 | **暂不自动发现** | 需手动提交（见下） |
+| `Allow: /`（允许抓取） | ✅ 生效 | 主机根 robots.txt 已存在 |
+| `Disallow:` 各条 | ✅ 生效 | 已按主机根视角补 `/ctbu-kexie-website/` 前缀 |
+| `Sitemap:` 声明 | ✅ 可自动发现 | 爬虫现在能读到该行 |
 
-**三种解决方式**（任一即可）：
+> 该文件为**手工维护**，非脚本生成。新增 Pages 项目时需同步更新其中的
+> `Sitemap:` 行与屏蔽规则。注意**不要**屏蔽 `/assets/`——那是真实图片目录，
+> 屏蔽后 `og:image` 与正文配图将无法被抓取。
 
-1. **绑定自定义域名（推荐）** —— 绑好后本站就位于域名根目录，
-   `https://你的域名/robots.txt` 立即全部生效。见下一节。
-2. **建一个用户站仓库** `tchao8820.github.io`，里面只放一份 robots.txt，
-   它就会成为 `tchao8820.github.io` 主机根目录的 robots.txt，覆盖所有项目页：
-
-   ```bash
-   # 新建仓库 tchao8820.github.io（公开），根目录放 robots.txt：
-   #   User-agent: *
-   #   Allow: /
-   #   Disallow: /ctbu-kexie-website/404.html
-   #   Sitemap: https://tchao8820.github.io/ctbu-kexie-website/sitemap.xml
-   ```
-
-3. **什么都不做** —— 影响很小：`404.html` 已带 `<meta name="robots" content="noindex,nofollow">`，
-   索引层面已被挡住；sitemap 手动提交一次也能被收录。
+> 绑定自定义域名后，这份主机根 robots.txt 将不再适用于新域名，届时需把等价规则
+> 同步到域名根目录（或用 `tools/set_site_url.py` 统一处理）。
 
 > 手动提交 sitemap（免费，各平台一次即可）：
 > Google Search Console / Bing Webmaster Tools / 百度搜索资源平台，添加站点后提交
 > `https://tchao8820.github.io/ctbu-kexie-website/sitemap.xml`
+
 
 ## 自定义域名
 
