@@ -403,14 +403,6 @@ tfoot td{background:#F4F7FC;font-weight:700;color:var(--ink);border-top:2px soli
 .memb figcaption{padding:14px 17px}
 .memb figcaption b{display:block;font-size:15px;color:var(--ink)}
 .memb figcaption span{font-size:12.5px;color:var(--sub);font-family:var(--mono)}
-.dist{display:grid;gap:11px;background:#fff;border:1px solid var(--line);border-radius:var(--r);
-  padding:26px;box-shadow:var(--sh)}
-.dist-i{display:grid;grid-template-columns:132px 1fr 66px;gap:13px;align-items:center;font-size:13.5px}
-.dist-i .dn2{color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.dist-bar{height:9px;background:#EDF2F9;border-radius:5px;overflow:hidden}
-.dist-bar i{display:block;height:100%;border-radius:5px;
-  background:linear-gradient(90deg,var(--blue),var(--cyan))}
-.dist-i .dv{font-family:var(--mono);font-size:12.5px;color:var(--ink);text-align:right}
 
 /* ============ 新闻 ============ */
 .news{display:grid;grid-template-columns:1.25fr .75fr;gap:26px;align-items:start}
@@ -450,7 +442,7 @@ tfoot td{background:#F4F7FC;font-weight:700;color:var(--ink);border-top:2px soli
   display:block;margin-top:3px}
 
 /* ============ 加入 ============ */
-.join{display:grid;grid-template-columns:1fr 1fr;gap:26px;align-items:start}
+.join{display:grid;grid-template-columns:1fr;gap:26px;align-items:start}
 .steps{display:grid;gap:12px}
 .step{display:flex;gap:15px;background:#fff;border:1px solid var(--line);border-radius:var(--r2);padding:17px 20px;box-shadow:var(--sh)}
 .step .sn{
@@ -459,38 +451,6 @@ tfoot td{background:#F4F7FC;font-weight:700;color:var(--ink);border-top:2px soli
 }
 .step b{display:block;font-size:15.5px;color:var(--ink);margin-bottom:3px}
 .step span{font-size:13.5px;color:var(--sub);line-height:1.68}
-.form{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:28px;box-shadow:var(--sh)}
-.form h3{font-size:19px;margin-bottom:6px}
-.form .hint{font-size:13.5px;color:var(--sub);margin-bottom:20px;line-height:1.7}
-.fr{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.fi{margin-bottom:14px}
-.fi label{display:block;font-size:13px;font-weight:600;color:var(--ink);margin-bottom:6px}
-.fi label i{color:var(--red);font-style:normal}
-.fi input,.fi select,.fi textarea{
-  width:100%;padding:11px 13px;font-size:14.5px;font-family:inherit;color:var(--ink);
-  background:#FBFCFE;border:1px solid var(--line2);border-radius:9px;transition:border-color .18s,box-shadow .18s;
-}
-.fi textarea{resize:vertical;min-height:84px;line-height:1.65}
-.fi input:focus,.fi select:focus,.fi textarea:focus{
-  outline:0;border-color:var(--blue);box-shadow:0 0 0 3px rgba(11,95,255,.14);background:#fff;
-}
-.fi input::placeholder,.fi textarea::placeholder{color:#A8B3C2}
-.form .btn{width:100%;justify-content:center;margin-top:6px}
-.note{
-  margin-top:16px;padding:13px 15px;background:#FFFBEB;border:1px solid #FDE68A;border-radius:9px;
-  font-size:12.5px;color:#78350F;line-height:1.7;
-}
-.note b{display:block;margin-bottom:4px;font-size:13.5px}
-.out{
-  margin-top:16px;display:none;padding:16px;border-radius:10px;
-  background:#ECFDF5;border:1px solid #A7F3D0;font-size:13.5px;color:#065F46;line-height:1.75;
-}
-.out.show{display:block}
-.out b{display:block;margin-bottom:7px;font-size:14.5px}
-.out pre{
-  margin:0;white-space:pre-wrap;word-break:break-all;font-family:var(--mono);font-size:12.5px;
-  background:#fff;border:1px solid #A7F3D0;border-radius:8px;padding:12px;color:#064E3B;line-height:1.7;
-}
 
 /* ============ 联系 ============ */
 .contact{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
@@ -568,7 +528,7 @@ html.anim .rv.in{opacity:1;transform:none}
   body{font-size:15.5px}
   section{padding:60px 0}
   .wrap{padding:0 18px}
-  .g2,.g3,.g4,.memb,.join,.fr{grid-template-columns:1fr}
+  .g2,.g3,.g4,.memb,.join{grid-template-columns:1fr}
   .org-top{grid-template-columns:1fr;gap:14px}
   .arrow{transform:rotate(90deg);justify-self:center}
   .depts{grid-template-columns:repeat(2,1fr)}
@@ -577,7 +537,6 @@ html.anim .rv.in{opacity:1;transform:none}
   .kpis{grid-template-columns:1fr 1fr;gap:12px}
   .kpi{padding:18px 16px}
   .n-item{grid-template-columns:1fr;gap:8px}
-  .dist-i{grid-template-columns:104px 1fr 56px;font-size:12.5px;gap:9px}
   .foot{grid-template-columns:1fr;gap:26px}
   .hero-actions .btn{flex:1 1 100%;justify-content:center}
   .tl{padding-left:28px}
@@ -765,12 +724,6 @@ html.anim .rv.in{opacity:1;transform:none}
           <div class="tl-t">第二十五届总结大会召开</div>
           <div class="tl-d">完成年度总结与表彰，照片已归档至「8.照片汇总」，为本届唯一已归档的整套影像资料。</div>
         </div>
-        <div class="tl-i key">
-          <div class="tl-y">2026—2027</div>
-          <div class="tl-t">第二十六届 · 目标「夺回五星」</div>
-          <div class="tl-d">会长佟超任内。依托五星级评定标准（基础 70 分＋专项 20 分，满分 90 分即五星线）倒排全年工作，重点补齐加分项。</div>
-          <span class="tl-badge b">进行中</span>
-        </div>
       </div>
     </div>
   </div>
@@ -813,12 +766,7 @@ html.anim .rv.in{opacity:1;transform:none}
       </div>
       <div class="dept">
         <div class="dn">科创运营部</div>
-        <div class="dd">对接校团委与学生社团管理中心争取资源；联系校外企业与科研机构；为活动争取赞助支持。</div>
-        <div class="dc">部长 3—5 名 · 干事若干</div>
-      </div>
-      <div class="dept">
-        <div class="dn">媒体宣传部</div>
-        <div class="dd">运营官方账号（微信公众号、QQ 群、抖音等）；制作视频、推文、海报等宣传物料，传播科技前沿资讯。</div>
+        <div class="dd">对接校团委与学生社团管理中心争取资源；联系校外企业与科研机构争取赞助；运营官方账号（微信公众号、QQ 群、抖音等）；制作视频、推文、海报等宣传物料，传播科技前沿资讯。</div>
         <div class="dc">部长 3—5 名 · 干事若干</div>
       </div>
     </div>
@@ -1028,33 +976,12 @@ html.anim .rv.in{opacity:1;transform:none}
       <h2 class="sec">成员风采</h2>
       <p class="lead">第二十四届社团会员报名共 109 人（按学号去重），来源覆盖 8 个学院、3 个校区——社团以开放姿态欢迎全校各专业同学加入。</p>
     </div>
-    <div class="grid g2 rv" style="align-items:start;margin-bottom:20px">
-      <div class="dist">
-        <h3 style="font-size:17px;margin-bottom:18px">第二十四届会员学院分布</h3>
-        <div id="distList"></div>
-        <noscript>
-          <p style="font-size:13px;color:var(--sub);line-height:1.8">
-            学院分布图由脚本渲染，当前浏览器已禁用 JavaScript。各学院人数为：机械工程学院 83、
-            人工智能学院 16、通识学院（江南校区）6、环境与资源学院 2、艺术学院 1、
-            食品科学与工程学院 1、其他 1（学院名称已归一化）。
-          </p>
-        </noscript>
-        <p style="font-size:12.5px;color:var(--sub);margin-top:18px;line-height:1.7">
-          统计口径：会员报名表 113 条记录，按学号去重后 109 人。学院名称已归一化（原表中「机械工程／机械学院／机械」等 4 种写法合并计为机械工程学院）。
-        </p>
-        <p style="font-size:12.5px;color:var(--amber);margin-top:8px;line-height:1.7">
-          <b>数据待核：</b>上表 7 项人数合计为 110 人，与去重后 109 人差 1 人；「其他」1 人是否应单列、
-          是否为重复学号导致，均待与原始报名表复核。相邻 KPI 卡片中的「机械工程学院 77 人（70.6%）」同样
-          依据109 人口径，与本表的 83 人不一致，差异原因待核。
-        </p>
-      </div>
-      <div class="kpis rv" style="grid-template-columns:1fr 1fr;align-content:start">
-        <div class="kpi"><b data-c="109">109</b><span>第二十四届会员（去重）</span></div>
+    <div class="kpis rv" style="margin-bottom:22px">
+        <div class="kpi"><b data-c="109">109</b><span>第二十四届会员（按学号去重）</span></div>
         <div class="kpi"><b data-c="8">8</b><span>来源学院（归一化）</span></div>
         <div class="kpi"><b data-c="3">3</b><span>覆盖校区</span></div>
-        <div class="kpi"><b data-c="77">77</b><span>其中机械工程学院（70.6%，与左表83 人待核）</span></div>
+        <div class="kpi"><b data-c="77">77</b><span>其中机械工程学院（70.6%）</span></div>
       </div>
-    </div>
     <div class="memb rv">
       <figure data-img="assets/img/team-24th.jpg" data-cap="第二十四届科协团建">
         <img src="assets/img/team-24th.jpg" alt="第二十四届科协团建合影" loading="lazy" width="900" height="675">
@@ -1169,83 +1096,6 @@ html.anim .rv.in{opacity:1;transform:none}
           </ul>
         </div>
       </div>
-      <div class="form rv">
-        <h3>入会登记</h3>
-        <p class="hint">填写后生成报名信息，可复制后发送给会长团联系人。本页为静态展示，暂不向服务器提交数据。</p>
-        <form id="joinForm" novalidate>
-          <div class="fr">
-            <div class="fi">
-              <label for="f-name">姓名 <i>*</i></label>
-              <input id="f-name" name="name" type="text" placeholder="请输入真实姓名" required autocomplete="name">
-            </div>
-            <div class="fi">
-              <label for="f-sid">学号 <i>*</i></label>
-              <input id="f-sid" name="sid" type="text" inputmode="numeric" placeholder="10 位数字学号"
-                     pattern="\d{10}" required>
-            </div>
-          </div>
-          <div class="fr">
-            <div class="fi">
-              <label for="f-col">学院 <i>*</i></label>
-              <select id="f-col" name="college" required>
-                <option value="">请选择学院</option>
-                <option>机械工程学院</option>
-                <option>人工智能学院</option>
-                <option>经济与管理学院</option>
-                <option>通识学院（江南校区）</option>
-                <option>艺术学院</option>
-                <option>其他学院</option>
-              </select>
-            </div>
-            <div class="fi">
-              <label for="f-cls">班级 <i>*</i></label>
-              <input id="f-cls" name="cls" type="text" placeholder="如 24 机自二">
-            </div>
-          </div>
-          <div class="fr">
-            <div class="fi">
-              <label for="f-tel">手机号 <i>*</i></label>
-              <input id="f-tel" name="tel" type="tel" inputmode="numeric" placeholder="11 位手机号"
-                     pattern="1\d{10}" required autocomplete="tel">
-            </div>
-            <div class="fi">
-              <label for="f-cam">校区</label>
-              <select id="f-cam" name="campus">
-                <option>南岸校区</option>
-                <option selected>兰花湖片区</option>
-                <option>江北校区</option>
-                <option>茶园校区</option>
-                <option>其他</option>
-              </select>
-            </div>
-          </div>
-          <div class="fi">
-            <label for="f-dept">意向部门</label>
-            <select id="f-dept" name="dept">
-              <option>赛事组织部</option>
-              <option>创客智研部</option>
-              <option>科创运营部</option>
-              <option>综合管理部</option>
-              <option>媒体宣传部</option>
-              <option>暂不确定</option>
-            </select>
-          </div>
-          <div class="fi">
-            <label for="f-note">自我介绍 / 意向</label>
-            <textarea id="f-note" name="note" placeholder="可简述你的专业方向、感兴趣的赛事或希望获得的锻炼机会"></textarea>
-          </div>
-          <button class="btn btn-p" type="submit">
-            生成报名信息
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-          </button>
-        </form>
-        <div class="note">
-          <b>关于本页表单</b>
-          本站为静态页面，表单不向任何服务器发送数据。你的信息只在本机浏览器中处理，用于生成一段可复制的报名文本；
-          请将文本发送给下方联系人，由会长团按章程第七条流程审核。
-        </div>
-        <div class="out" id="out"></div>
-      </div>
     </div>
   </div>
 </section>
@@ -1328,9 +1178,9 @@ html.anim .rv.in{opacity:1;transform:none}
       </div>
       <div>
         <h4>加入我们</h4>
+        <a href="#join">入会流程与权益</a>
         <a href="tel:19822516790">会长佟超 · 198 2251 6790</a>
         <a href="tel:02362768188">指导教师 · 023-6276 8188</a>
-        <a href="#join">入会登记表单</a>
         <a href="#contact">联系方式</a>
       </div>
     </div>
@@ -1374,9 +1224,6 @@ var RESULTS=[
 ["智慧农业创客大赛",29,78,15,40,51.7],
 ["柔性传感器比赛",10,10,1,1,10.0]];
 
-var DIST=[["机械工程学院",83],["人工智能学院",16],["通识学院（江南校区）",6],
-["环境与资源学院",2],["艺术学院",1],["食品科学与工程学院",1],["其他",1]];
-
 /* ============ 渲染赛事表 ============ */
 (function(){
   var tb=document.getElementById('tbodyRes');
@@ -1394,21 +1241,6 @@ var DIST=[["机械工程学院",83],["人工智能学院",16],["通识学院（�
       '<td class="n">'+r[5].toFixed(1)+'%</td>';
     tr.firstElementChild.setAttribute('scope','row');
     tb.appendChild(tr);
-  });
-})();
-
-/* ============ 渲染学院分布 ============ */
-(function(){
-  var box=document.getElementById('distList');
-  if(!box) return;
-  var max=Math.max.apply(null,DIST.map(function(d){return d[1];}));
-  DIST.forEach(function(d){
-    var el=document.createElement('div');
-    el.className='dist-i';
-    el.innerHTML='<div class="dn2" title="'+d[0]+'">'+d[0]+'</div>'+
-      '<div class="dist-bar"><i style="width:'+(d[1]/max*100).toFixed(1)+'%"></i></div>'+
-      '<div class="dv">'+d[1]+' 人</div>';
-    box.appendChild(el);
   });
 })();
 
@@ -1527,55 +1359,6 @@ var DIST=[["机械工程学院",83],["人工智能学院",16],["通识学院（�
   document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&lb.classList.contains('show')) close(); });
 })();
 
-/* ============ 入会表单 ============ */
-(function(){
-  var f=document.getElementById('joinForm'),out=document.getElementById('out');
-  if(!f) return;
-  f.addEventListener('submit',function(e){
-    e.preventDefault();
-    var ok=true;
-    ['f-name','f-sid','f-col','f-tel'].forEach(function(id){
-      var el=document.getElementById(id);
-      if(!el.value.trim()){ el.style.borderColor='#B91C1C'; ok=false; }
-      else el.style.borderColor='';
-    });
-    var sid=document.getElementById('f-sid').value.trim();
-    var tel=document.getElementById('f-tel').value.trim();
-    if(sid && !/^\d{10}$/.test(sid)){ document.getElementById('f-sid').style.borderColor='#B91C1C'; ok=false; }
-    if(tel && !/^1\d{10}$/.test(tel)){ document.getElementById('f-tel').style.borderColor='#B91C1C'; ok=false; }
-    if(!ok){
-      out.className='out show';
-      out.innerHTML='<b>请检查表单</b>学号需为 10 位数字，手机号需为 11 位且以 1 开头，姓名、学院为必填项。';
-      return;
-    }
-    var g=function(id){return document.getElementById(id).value.trim();};
-    var txt=
-'重庆工商大学科技协会 入会申请\n'+
-'────────────────────\n'+
-'姓名：'+g('f-name')+'\n'+
-'学号：'+g('f-sid')+'\n'+
-'学院：'+g('f-col')+'\n'+
-'班级：'+(g('f-cls')||'—')+'\n'+
-'校区：'+g('f-cam')+'\n'+
-'手机号：'+g('f-tel')+'\n'+
-'意向部门：'+g('f-dept')+'\n'+
-'自我介绍：'+(g('f-note')||'—')+'\n'+
-'────────────────────\n'+
-'请将本段文字发送至会长佟超（198 2251 6790 / QQ 481048415）';
-    out.className='out show';
-    out.innerHTML='<b>报名信息已生成</b>请复制下方文字发送给会长团联系人，由会长团按章程第七条流程审核。<pre id="preTxt"></pre>';
-    document.getElementById('preTxt').textContent=txt;
-    if(navigator.clipboard&&window.isSecureContext){
-      navigator.clipboard.writeText(txt).then(function(){
-        var b=document.createElement('button');
-        b.className='btn btn-o';b.style.marginTop='12px';b.style.width='auto';
-        b.textContent='复制成功 · 再点复制';
-        b.onclick=function(){navigator.clipboard.writeText(txt);};
-        out.appendChild(b);
-      }).catch(function(){});
-    }
-  });
-})();
 </script>
 </body>
 </html>
