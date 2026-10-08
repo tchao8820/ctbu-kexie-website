@@ -46,6 +46,7 @@ SKIP_FILES = {
     "404.html",
     "template.html",
     "index.template.html",
+    "editor.html",# 临时在线编辑器，不应被搜索引擎收录
 }
 
 # robots.txt 屏蔽规则（顺序即输出顺序）
@@ -53,6 +54,7 @@ SKIP_FILES = {
 #       屏蔽后 og:image 与正文配图将无法被抓取，影响图片搜索收录。
 DISALLOW = [
     "/404.html",          # 错误页，无内容
+    "/editor.html",       # 临时在线编辑器，不应对外收录
     "/tools/",            # 生成脚本（.py，无索引价值）
     "/dist/",             # 构建产物目录
     "/build/",            # 构建产物目录

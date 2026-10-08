@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>内容编辑器 · 重庆工商大学科技协会</title>
+<style>
+:root{
+  --blue:#0B5FFF;--blue-d:#0847C4;--cyan:#06B6D4;--ink:#0B1524;--ink2:#334155;
+  --sub:#64748B;--line:#E2E8F0;--line2:#CBD5E1;--bg:#F6F8FC;--card:#FFF;
+  --ok:#047857;--warn:#D97706;--red:#B91C1C;--amber:#B45309;
+  --mono:"SF Mono","Cascadia Mono",Consolas,monospace;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHe",sans-serif;
+  --sh:0 1px 2px rgba(11,21,36,.05),0 8px 24px -12px rgba(11,21,36,.14);
+  --sh2:0 4px 12px rgba(11,21,36,.1),0 20px 48px -20px rgba(11,21,36,.3);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink2);font-family:var(--sans);font-size:15px;line-height:1.7}
+
+/* ===== 工具栏 ===== */
+.bar{position:sticky;top:0;z-index:100;background:#0A1628;color:#fff;box-shadow:0 4px 20px rgba(0,0,0,.2)}
+.bar-in{max-width:1400px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.bar h1{margin:0;font-size:16px;font-weight:700;color:#fff;display:flex;align-items:center;gap:9px}
+.bar .dot{width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 3px rgba(4,120,87,.25)}
+.bar .sp{flex:1}
+.btn{font-family:inherit;font-size:13.5px;font-weight:600;padding:8px 15px;border-radius:8px;border:1px solid transparent;
+  cursor:pointer;transition:.15s;white-space:nowrap;display:inline-flex;align-items:center;gap:6px}
+.btn-p{background:var(--blue);color:#fff}.btn-p:hover{background:var(--blue-d)}
+.btn-o{background:rgba(255,255,255,.1);color:#E2E8F0;border-color:rgba(255,255,255,.22)}.btn-o:hover{background:rgba(255,255,255,.18)}
+.btn-g{background:var(--ok);color:#fff}.btn-g:hover{filter:brightness(.92)}
+.btn-w{background:#fff;color:var(--ink);border-color:var(--line2)}.btn-w:hover{border-color:var(--blue);color:var(--blue)}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.bar .st{font-family:var(--mono);font-size:12.5px;color:#94A3B8}
+.bar .st b{color:#67E8F9;font-weight:600}
+
+/* ===== 主体 ===== */
+.wrap{max-width:1400px;margin:0 auto;padding:22px 20px 80px}
+.tip{background:#EFF6FF;border:1px solid #BFDBFE;border-radius:11px;padding:14px 17px;font-size:13.5px;
+  color:#1E3A5F;margin-bottom:20px;line-height:1.75}
+.tip b{color:var(--blue-d)}
+.tip ol{margin:8px 0 0;padding-left:22px}
+.tip li{margin-bottom:4px}
+.tip code{background:#DBEAFE;padding:1px 6px;border-radius:4px;font-family:var(--mono);font-size:12.5px}
+
+.cols{display:grid;grid-template-columns:340px 1fr;gap:22px;align-items:start}
+.side{position:sticky;top:78px;background:var(--card);border:1px solid var(--line);border-radius:13px;
+  box-shadow:var(--sh);overflow:hidden}
+.side-h{padding:14px 17px;border-bottom:1px solid var(--line);font-weight:700;font-size:14.5px;color:var(--ink);
+  background:#F8FAFC;display:flex;align-items:center;gap:8px}
+.side-h .n{font-family:var(--mono);font-size:11.5px;background:var(--blue);color:#fff;padding:1px 7px;border-radius:20px}
+.nav{padding:8px;max-height:calc(100vh - 160px);overflow-y:auto}
+.nav a{display:flex;align-items:center;gap:8px;padding:8px 11px;border-radius:8px;color:var(--ink2);
+  text-decoration:none;font-size:13.5px;transition:.12s}
+.nav a:hover{background:#F1F5F9;color:var(--blue)}
+.nav a.on{background:#EEF3FF;color:var(--blue-d);font-weight:600}
+.nav a .c{font-family:var(--mono);font-size:11px;color:var(--sub);margin-left:auto}
+.nav .sep{padding:10px 11px 5px;font-size:11px;font-family:var(--mono);color:var(--sub);
+  text-transform:uppercase;letter-spacing:.08em}
+
+.main{min-width:0}
+.grp{background:var(--card);border:1px solid var(--line);border-radius:13px;box-shadow:var(--sh);
+  margin-bottom:18px;overflow:hidden;scroll-margin-top:80px}
+.grp-h{padding:13px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px;
+  flex-wrap:wrap;background:#F8FAFC}
+.grp-h h2{margin:0;font-size:15.5px;color:var(--ink);font-weight:700}
+.grp-h .id{font-family:var(--mono);font-size:11.5px;color:var(--sub);background:#F1F5F9;
+  padding:2px 8px;border-radius:5px}
+.grp-h .sp{flex:1}
+.grp-b{padding:16px 18px}
+.row{margin-bottom:14px;padding-bottom:14px;border-bottom:1px dashed var(--line)}
+.row:last-child{margin-bottom:0;padding-bottom:0;border-bottom:0}
+.lbl{display:block;font-family:var(--mono);font-size:11px;color:var(--sub);text-transform:uppercase;
+  letter-spacing:.06em;margin-bottom:5px}
+.in,.ta{width:100%;font-family:inherit;font-size:14px;color:var(--ink);background:#FBFCFE;
+  border:1px solid var(--line2);border-radius:8px;padding:8px 11px;line-height:1.65;transition:.15s}
+.in:focus,.ta:focus{outline:0;border-color:var(--blue);box-shadow:0 0 0 3px rgba(11,95,255,.14);background:#fff}
+.ta{min-height:74px;resize:vertical}
+.in.sm{font-family:var(--mono);font-size:13.5px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.three{display:grid;grid-template-columns:2fr 1fr 1fr;gap:11px}
+.it{position:relative;background:#F8FAFC;border:1px solid var(--line);border-radius:10px;
+  padding:12px 14px;margin-bottom:11px}
+.it.dirty{border-color:#FCD34D;background:#FFFBEB}
+.it-h{display:flex;align-items:center;gap:8px;margin-bottom:9px}
+.it-h .ix{font-family:var(--mono);font-size:11px;color:var(--sub);background:#F1F5F9;padding:2px 7px;border-radius:5px}
+.it-h .sp{flex:1}
+.x{background:transparent;border:1px solid var(--line2);color:var(--sub);width:25px;height:25px;
+  border-radius:6px;cursor:pointer;font-size:14px;line-height:1;display:flex;align-items:center;
+  justify-content:center;transition:.15s;font-family:var(--mono)}
+.x:hover{background:#FEF2F2;border-color:#FCA5A5;color:var(--red)}
+.add{background:#fff;border:1px dashed var(--line2);color:var(--sub);width:100%;padding:9px;
+  border-radius:9px;cursor:pointer;font-size:13.5px;font-family:inherit;transition:.15s;margin-top:3px}
+.add:hover{border-color:var(--blue);color:var(--blue);background:#F8FAFF}
+.hint{font-size:12.5px;color:var(--sub);line-height:1.65}
+.hint code{background:#F1F5F9;padding:1px 5px;border-radius:4px;font-family:var(--mono);font-size:12px}
+.calc{background:#F0F9FF;border:1px solid #BAE6FD;border-radius:9px;padding:12px 14px;font-size:13px;
+  color:#075985;line-height:1.75;margin-top:4px}
+.calc b{font-family:var(--mono)}
+
+/* ===== 预览 ===== */
+.pv{position:fixed;inset:0;background:rgba(11,21,36,.5);display:none;z-index:200;padding:26px}
+.pv.on{display:flex;flex-direction:column}
+.pv-h{display:flex;align-items:center;gap:12px;margin-bottom:13px;color:#fff}
+.pv-h h3{margin:0;font-size:16px;color:#fff}
+.pv-h .sp{flex:1}
+.pv-b{flex:1;background:#fff;border-radius:11px;overflow:hidden;box-shadow:var(--sh2)}
+.pv-b iframe{width:100%;height:100%;border:0}
+
+/* ===== 导出 ===== */
+.modal{position:fixed;inset:0;background:rgba(11,21,36,.6);display:none;z-index:300;padding:26px;
+  align-items:center;justify-content:center}
+.modal.on{display:flex}
+.m-b{background:#fff;border-radius:14px;max-width:880px;width:100%;max-height:88vh;display:flex;
+  flex-direction:column;box-shadow:var(--sh2);overflow:hidden}
+.m-h{padding:17px 22px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px}
+.m-h h3{margin:0;font-size:17px;color:var(--ink)}
+.m-h .sp{flex:1}
+.m-b2{padding:20px 22px;overflow-y:auto;flex:1}
+.m-b2 ol{margin:0 0 16px;padding-left:24px;font-size:14px;line-height:1.9}
+.m-b2 li{margin-bottom:5px}
+.m-b2 textarea{width:100%;height:230px;font-family:var(--mono);font-size:11.5px;line-height:1.6;
+  border:1px solid var(--line2);border-radius:9px;padding:12px;resize:vertical;color:var(--ink2)}
+.m-f{padding:15px 22px;border-top:1px solid var(--line);display:flex;gap:10px;align-items:center;
+  flex-wrap:wrap;background:#F8FAFC}
+.m-f .sp{flex:1}
+.m-f .hint{font-size:12.5px}
+
+.toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(90px);
+  background:#0B1524;color:#fff;padding:12px 22px;border-radius:10px;font-size:13.5px;z-index:400;
+  box-shadow:var(--sh2);transition:.28s;opacity:0;pointer-events:none;max-width:90vw}
+.toast.on{transform:translateX(-50%) translateY(0);opacity:1}
+
+@media(max-width:1000px){
+  .cols{grid-template-columns:1fr}
+  .side{position:static}
+  .nav{max-height:230px}
+  .three,.two{grid-template-columns:1fr}
+  .wrap{padding:16px 14px 60px}
+  .bar-in{padding:10px 14px}
+}
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <div class="bar-in">
+    <h1><span class="dot"></span>CTBU-STA 内容编辑器</h1>
+    <span class="st" id="st">载入中…</span>
+    <span class="sp"></span>
+    <button class="btn btn-o" id="btnPrev">预览效果</button>
+    <button class="btn btn-o" id="btnReset">放弃改动</button>
+    <button class="btn btn-g" id="btnExport">生成新版 HTML →</button>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="tip">
+    <b>临时编辑模式</b>：本页用于在线修改内容，改完生成新版 <code>index.html</code>，再到 GitHub 网页粘贴上传。
+    <ol>
+      <li>左侧点区块跳转到对应位置，直接在右侧改文字</li>
+      <li>带 <b>＋</b> 的按钮可新增条目（历程、新闻、赛事、部门、联系方式）</li>
+      <li>改完点右上 <b>生成新版 HTML</b>，按提示上传即可上线</li>
+    </ol>
+    <span style="display:block;margin-top:8px;color:var(--sub)">
+      ⚠️ 这是<b>静态页面</b>，没有服务器数据库——改动不会自动保存，请在生成后完成上传。刷新页面会丢失未导出的改动。
+    </span>
+  </div>
+
+  <div class="cols">
+    <aside class="side">
+      <div class="side-h">页面区块<span class="n" id="navN">0</span></div>
+      <nav class="nav" id="nav"></nav>
+    </aside>
+    <main class="main" id="main">
+      <div style="background:#fff;border:1px solid var(--line);border-radius:13px;padding:34px;
+        text-align:center;color:var(--sub);box-shadow:var(--sh)" id="loading">正在载入 index.html…</div>
+    </main>
+  </div>
+</div>
+
+<!-- 预览 -->
+<div class="pv" id="pv">
+  <div class="pv-h">
+    <h3>改动后预览</h3><span class="sp"></span>
+    <button class="btn btn-w" id="pvClose">关闭</button>
+  </div>
+  <div class="pv-b"><iframe id="pvF"></iframe></div>
+</div>
+
+<!-- 导出 -->
+<div class="modal" id="mdl">
+  <div class="m-b">
+    <div class="m-h">
+      <h3>生成新版 index.html — 上传三步</h3><span class="sp"></span>
+      <button class="btn btn-w" id="mClose">关闭</button>
+    </div>
+    <div class="m-b2">
+      <ol>
+        <li>点「下载 index.html」保存文件（文件名保持 <code>index.html</code>）</li>
+        <li>打开仓库的网页编辑器：
+          <br><a href="https://github.com/tchao8820/ctbu-kexie-website/edit/main/index.html"
+             target="_blank" rel="noopener"
+             style="color:var(--blue);font-family:var(--mono);font-size:12.5px">
+             github.com/tchao8820/ctbu-kexie-website/edit/main/index.html</a></li>
+        <li>把文件内容全选粘贴进去（覆盖原内容），填一句提交说明，
+            底部 <b>Commit changes</b> → 等 1–2 分钟自动上线</li>
+      </ol>
+      <p class="hint" style="margin:0 0 8px">下面是生成好的完整内容，可直接复制粘贴：</p>
+      <textarea id="out" spellcheck="false" readonly></textarea>
+    </div>
+    <div class="m-f">
+      <button class="btn btn-p" id="btnCopy">复制全部内容</button>
+      <button class="btn btn-g" id="btnDl">下载 index.html</button>
+      <span class="sp"></span>
+      <span class="hint" id="dlHint">改动会替换整个 index.html，请确认已完整复制</span>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+"use strict";
+
+/* =======================================================================
+   说明
+   ------
+   本编辑器直接修改 index.html 的源码字符串：把源码存进 state.src，
+   用 DOMParser 解析成可编辑视图，用户改动时记录为「补丁操作」，
+   最后按补丁逐条应用回源码并序列化输出。
+
+   为什么不直接 contenteditable 全页改再序列化：
+   contenteditable 会破坏原 HTML 的缩进与实体，且无法定位回源码位置。
+   补丁方式能保证「没动过的部分逐字节不变」，只改真正编辑的字段。
+   ======================================================================= */
+
+var SRC = null; // 由 load() 赋值
+var DIRTY = new Set(); // 脏字段 key
+var LIVE = new Map();  // key -> {el, kind}
+
+var ED = {};          // 配置在下方
+
+/* ---------- 工具 ---------- */
+function $(s, r) { return (r || document).querySelector(s); }
+function $$(s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
+function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+function toast(m) {
+  var t = $('#toast'); t.textContent = m; t.classList.add('on');
+  clearTimeout(t._t); t._t = setTimeout(function () { t.classList.remove('on'); }, 2600);
+}
+
+/* ---------- 载入 ---------- */
+function load() {
+  fetch('index.html', { cache: 'no-store' })
+    .then(function (r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.text();
+    })
+    .then(function (t) {
+      SRC = t;
+      $('#loading').remove();
+      build();
+      $('#st').innerHTML = '已载入 <b>' + (t.length / 1024).toFixed(1) + '</b> KB · 改动 <b id="dn">0</b> 处';
+    })
+    .catch(function (e) {
+      $('#loading').innerHTML =
+        '<b style="color:var(--red)">载入失败：' + esc(e.message) + '</b><br><br>' +
+        '本编辑器需通过 HTTP 访问（不能直接双击打开 index.html）。<br>' +
+        '在仓库目录执行：<code style="font-family:var(--mono)">python -m http.server 8000</code><br>' +
+        '然后访问 <code style="font-family:var(--mono)">http://localhost:8000/editor.html</code>';
+    });
+}
+
+/* ---------- 字段绑定 ---------- */
+function field(key, label, val, kind, ph) {
+  kind = kind || 'in';
+  var w = kind === 'ta'
+    ? '<textarea class="ta" data-k="' + key + '" placeholder="' + esc(ph || '') + '">' + esc(val) + '</textarea>'
+    : '<input class="in' + (kind === 'sm' ? ' sm' : '') + '" data-k="' + key + '" value="' + esc(val) +
+      '" placeholder="' + esc(ph || '') + '">';
+  return '<div class="row"><label class="lbl">' + esc(label) + '</label>' + w + '</div>';
+  }
+function bind(el) {
+  var k = el.getAttribute('data-k');
+  LIVE.set(k, { el: el, kind: el.tagName === 'TEXTAREA' ? 'ta' : 'in' });
+  el.addEventListener('input', function () {
+    DIRTY.add(k);
+    var b = el.closest('.it'); if (b) b.classList.add('dirty');
+    $('#dn').textContent = DIRTY.size;
+  });
+}
+function bindAll(root) { $$('[data-k]', root).forEach(bind); }
+
+/* ---------- 区块外壳 ---------- */
+function group(id, title, badge, body) {
+  return '<section class="grp" id="g-' + id + '">' +
+    '<div class="grp-h"><h2>' + esc(title) + '</h2>' +
+    '<span class="id">#' + esc(id) + '</span><span class="sp"></span>' + (badge || '') +
+    '</div><div class="grp-b">' + body + '</div></section>';
+}
+function addBtn(gid, label) {
+  return '<button class="add" data-add="' + gid + '">＋ ' + esc(label) + '</button>';
+}
+
+/* ---------- 构建编辑界面 ---------- */
+function build() {
+  try {
+  var d = new DOMParser().parseFromString(SRC, 'text/html');
+  var M = new Map(); // 分组 -> 字段列表
+
+  function G(id) { if (!M.has(id)) M.set(id, []); return M.get(id); }
+  function push(id, html) { G(id).push(html); }
+
+  var defs = ED.sections(d);
+  for (var i = 0; i < defs.length; i++) {
+    var s = defs[i];
+    push(s.id, group(s.id, s.title, s.badge, s.body));
+  }
+
+  var html = defs.map(function (s) { return G(s.id).join(''); }).join('');
+  $('#main').innerHTML = html;
+  bindAll($('#main'));
+  buildNav(defs);
+  attachAdd();
+  } catch (err) {
+    console.error(err);
+    var msg = (err && err.stack) ? err.stack : String(err);
+    $('#main').innerHTML = '<pre style="white-space:pre-wrap;color:#B91C1C;font-size:12.5px;' +
+      'background:#FEF2F2;border:1px solid #FECACA;border-radius:9px;padding:14px">' +
+      '构建失败：\n' + esc(msg) + '</pre>';
+    $('#st').textContent = '构建失败';
+  }
+}
+
+/* ---------- 侧栏导航 ---------- */
+function buildNav(defs) {
+  var h = defs.map(function (s) {
+    return '<div class="sep">' + esc(s.nav || s.title) + '</div>' +
+      '<a href="#g-' + s.id + '" data-g="' + s.id + '">' + esc(s.title) +
+      '<span class="c">' + (s.count || '') + '</span></a>';
+  }).join('');
+  $('#nav').innerHTML = h;
+  $('#navN').textContent = defs.length;
+  var links = $$('#nav a');
+  links.forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      e.preventDefault();
+      var t = document.getElementById('g-' + a.getAttribute('data-g'));
+      if (t) window.scrollTo({ top: t.offsetTop - 70, behavior: 'smooth' });
+      links.forEach(function (x) { x.classList.remove('on'); });
+      a.classList.add('on');
+    });
+  });
+  window.addEventListener('scroll', function () {
+    var best = null, bd = 1e9;
+    $$('.grp').forEach(function (g) {
+      var d = Math.abs(g.getBoundingClientRect().top - 80);
+      if (d < bd) { bd = d; best = g.id; }
+    });
+    links.forEach(function (x) { x.classList.toggle('on', x.getAttribute('data-g') === best); });
+  }, { passive: true });
+}
+
+/* =======================================================================
+   字段定义（核心）
+   ======================================================================= */
+
+/* 从源码里读出某选择器的文本，保留实体解码前的原样 */
+function txt(d, sel, i) {
+  var n = $$(sel, d)[i || 0];
+  return n ? n.innerHTML.replace(/\s+/g, ' ').trim() : '';
+}
+function plain(d, sel, i) {
+  var n = $$(sel, d)[i || 0];
+  return n ? n.textContent.replace(/\s+/g, ' ').trim() : '';
+}
+function k(base, i) { return base + '::' + i; }
+
+ED.sections = function (d) {
+  var S = [];
+
+  /* ---------- 通用：章节标题与导语 ---------- */
+  var heads = [];
+  ['about', 'history', 'org', 'activity', 'results', 'member', 'news', 'join', 'contact'].forEach(function (id) {
+    var sec = d.getElementById(id); if (!sec) return;
+    var h2 = $('.h2.sec', sec) || $('.sec-head h2', sec);
+    var lead = $('.lead', sec);
+    if (!h2) return;
+    heads.push({ id: id, h2: h2.textContent.trim(), lead: lead ? lead.textContent.trim() : '', hasLead: !!lead });
+  });
+
+  S.push({
+    id: 'meta', title: '页面信息', nav: '页头 / SEO', count: heads.length,
+    body: heads.map(function (h) {
+      return '<div class="it"><div class="it-h"><span class="ix">#' + h.id + '</span><span class="sp"></span></div>' +
+        field(k('h2', h.id), '区块标题（' + h.id + '）', h.h2) +
+        (h.hasLead ? field(k('lead', h.id), '导语文字', h.lead, 'ta') : '') +
+        '</div>';
+    }).join('')
+  });
+
+  /* ---------- 协会历程 ---------- */
+  var tl = [];
+  $$('#history .tl-i', d).forEach(function (it, i) {
+    tl.push({
+      y: plain(it, '.tl-y'), t: plain(it, '.tl-t'), d: plain(it, '.tl-d'),
+      b: plain(it, '.tl-badge'), i: i
+    });
+  });
+  S.push({
+    id: 'history', title: '协会历程时间线', nav: '历程', count: tl.length + ' 条',
+    badge: addBtn('tl', '新增一条历程'),
+    body: '<div id="box-tl">' + tl.map(function (x, i) {
+      return item('tl', i, x.y, [
+        field(k('tly', i), '年份 / 时间', x.y),
+        field(k('tlt', i), '标题', x.t),
+        field(k('tld', i), '描述', x.d, 'ta'),
+        x.b ? field(k('tlb', i), '徽章文字（如：五星）', x.b) : ''
+      ].join(''));
+    }).join('') + '</div>'
+  });
+
+  /* ---------- 组织架构 ---------- */
+  var depts = $$('#org .dept', d).map(function (d2, i) {
+    return { n: plain(d2, '.dn'), d: plain(d2, '.dd'), c: plain(d2, '.dc'), i: i };
+  });
+  var orgCard = [];
+  $$('#org .card .c-val', d).forEach(function (v, i) {
+    orgCard.push({ v: v.textContent.trim(), sub: plain(v.parentNode, '.c-sub') });
+  });
+  S.push({
+    id: 'org', title: '组织架构', nav: '组织', count: depts.length + ' 部门',
+    badge: addBtn('dept', '新增一个部门'),
+    body: '<div id="box-dept">' + depts.map(function (x, i) {
+      return item('dept', i, x.n, [
+        field(k('dn', i), '部门名称', x.n),
+        field(k('dd', i), '职责描述', x.d, 'ta'),
+        field(k('dc', i), '人数说明', x.c)
+      ].join(''));
+    }).join('') + '</div>' +
+      '<div class="lbl" style="margin-top:18px">现任负责人 / 指导教师 / 专项小组</div>' +
+      orgCard.map(function (c, i) {
+        return item('orgc', i, c.v, [
+          field(k('ocv', i), '姓名 / 数值', c.v),
+          field(k('ocs', i), '说明', c.sub)
+        ].join(''));
+      }).join('') + addBtn('orgc', '新增一项')
+  });
+
+  /* ---------- 新闻动态 ---------- */
+  var news = $$('#news .n-item', d).map(function (n, i) {
+    return {
+      d: plain(n, '.n-date'), kind: plain(n, '.n-kind'),
+      t: plain(n, '.n-bd h3'), p: plain(n, '.n-bd p'), i: i
+    };
+  });
+  S.push({
+    id: 'news', title: '新闻动态', nav: '新闻', count: news.length + ' 条',
+    badge: addBtn('news', '新增一条新闻'),
+    body: '<div id="box-news">' + news.map(function (x, i) {
+      return item('news', i, x.t.slice(0, 18), [
+        '<div class="two">' + field(k('nd', i), '日期', x.d.replace(/\s*\S+$/, '')) +
+        field(k('nk', i), '分类', x.kind) + '</div>',
+        field(k('nt', i), '标题', x.t),
+        field(k('np', i), '正文', x.p, 'ta')
+      ].join(''));
+    }).join('') + '</div>'
+  });
+
+  /* ---------- 赛事成绩（20 项，需重算合计） ---------- */
+  var m = (SRC || '').match(/var RESULTS=\[([\s\S]*?)\];/);
+  var rows = m ? (m[1].match(/\["(?:[^"\\]|\\.)*",[\d.]+(?:,[\d.]+){4}\]/g) || []) : [];
+  var res = rows.map(function (r) {
+    var p = r.slice(1, -1).match(/"(?:[^"\\]|\\.)*"|[\d.]+/g);
+    return { name: p[0].slice(1, -1), a: +p[1], b: +p[2], c: +p[3], d: +p[4], e: +p[5] };
+  });
+  var sum = res.reduce(function (a, r) {
+    return { a: a.a + r.a, b: a.b + r.b, c: a.c + r.c, d: a.d + r.d };
+  }, { a: 0, b: 0, c: 0, d: 0 });
+
+  S.push({
+    id: 'results', title: '科创月赛事成绩', nav: '成绩', count: res.length + ' 项',
+    badge: addBtn('res', '新增一项赛事'),
+    body: '<div id="box-res">' + res.map(function (x, i) {
+      return item('res', i, x.name.slice(0, 18),
+        field(k('rn', i), '赛事名称', x.name) +
+        '<div class="five">' +
+        field(k('r1', i), '报名组', x.a, 'sm') + field(k('r2', i), '报名人次', x.b, 'sm') +
+        field(k('r3', i), '获奖组', x.c, 'sm') + field(k('r4', i), '获奖人次', x.d, 'sm') +
+        field(k('r5', i), '获奖率 %', x.e.toFixed(1), 'sm') + '</div>');
+    }).join('') + '</div>' +
+      '<div class="calc" id="calc"></div>' +
+      '<p class="hint" style="margin-top:8px">合计与获奖率由脚本按上方数字<b>自动重算</b>，' +
+      '你只需填 5 个数字，保存时会同步更新页面合计行。留空按 0 计。</p>'
+  });
+
+  /* ---------- 联系方式 ---------- */
+  var cs = $$('#contact .c-card', d).map(function (c, i) {
+    var tel = (c.getAttribute('href') || '').replace('tel:', '');
+    return { lab: plain(c, '.c-lab'), val: plain(c, '.c-val'), sub: plain(c, '.c-sub'), tel: tel, i: i };
+  });
+  S.push({
+    id: 'contact', title: '联系方式', nav: '联系', count: cs.length + ' 项',
+    badge: addBtn('ct', '新增一项联系'),
+    body: '<div id="box-ct">' + cs.map(function (x, i) {
+      return item('ct', i, x.lab, [
+        field(k('cl', i), '标签', x.lab),
+        field(k('cv', i), '内容', x.val),
+        field(k('cs', i), '说明', x.sub),
+        field(k('ch', i), '链接（电话填 tel:138… ）', x.tel)
+      ].join(''));
+    }).join('') + '</div>'
+  });
+
+  /* ---------- 英雄区 ---------- */
+  S.push({
+    id: 'hero', title: '首屏横幅', nav: '首屏', count: 4,
+    body: '<div class="it"><div class="it-h"><span class="ix">hero</span></div>' +
+      field(k('hq', 's'), '标语（加粗前）', plain(d, '.slogan')) +
+      field(k('hq', 'b'), '标语（强调色部分）', plain(d, '.slogan em')) +
+      field(k('hq', 's2'), '副标语', plain(d, '.slogan2')) +
+      field(k('hq', 'en'), '英文全称', plain(d, '.hero-in .en')) +
+      field(k('hq', 'badge'), '成立说明', plain(d, '.hero-badge')) +
+      '</div>'
+  });
+
+  return S;
+};
+
+/* 条目外壳（含删除按钮） */
+function item(kind, i, label, fields) {
+  return '<div class="it" data-kind="' + kind + '" data-i="' + i + '">' +
+    '<div class="it-h"><span class="ix">#' + (i + 1) + '</span>' +
+    '<span style="font-size:12.5px;color:var(--ink);font-weight:600;overflow:hidden;' +
+    'text-overflow:ellipsis;white-space:nowrap;max-width:190px">' + esc(label) + '</span>' +
+    '<span class="sp"></span><button class="x" data-del="' + kind + ':' + i + '" title="删除">✕</button>' +
+    '</div>' + fields + '</div>';
+}
+
+/* ---------- 新增 / 删除 ---------- */
+var SEQ = {};
+function attachAdd() {
+  $$('[data-add]').forEach(function (b) {
+    b.addEventListener('click', function () { addItem(b.getAttribute('data-add')); });
+  });
+  document.addEventListener('click', function (e) {
+    var x = e.target.closest('[data-del]'); if (!x) return;
+    if (!confirm('确认删除这一条？删除后可在导出前重新调整。')) return;
+    var p = x.getAttribute('data-del').split(':');
+    var n = document.querySelector(x.parentNode.parentNode);
+    n.style.display = 'none';
+    n.setAttribute('data-gone', '1');
+    DIRTY.add('__del:' + p[0] + ':' + p[1]);
+    $('#dn').textContent = DIRTY.size;
+  });
+}
+function addItem(kind) {
+  var box = $('#box-' + kind); if (!box) return;
+  SEQ[kind] = (SEQ[kind] || 0) + 1;
+  var idx = Date.now().toString(36);
+  var F = {
+    tl: function () {
+      return item('tl', 'n' + idx, '新历程', field('tly:n' + idx, '年份 / 时间', '2026—2027') +
+        field('tlt:n' + idx, '标题', '') + field('tld:n' + idx, '描述', '', 'ta') +
+        field('tlb:n' + idx, '徽章文字（可留空）', ''));
+    },
+    dept: function () {
+      return item('dept', 'n' + idx, '新部门', field('dn:n' + idx, '部门名称', '') +
+        field('dd:n' + idx, '职责描述', '', 'ta') + field('dc:n' + idx, '人数说明', ''));
+    },
+    news: function () {
+      return item('news', 'n' + idx, '新新闻',
+        '<div class="two">' + field('nd:n' + idx, '日期', '') + field('nk:n' + idx, '分类', '活动报道') + '</div>' +
+        field('nt:n' + idx, '标题', '') + field('np:n' + idx, '正文', '', 'ta'));
+    },
+    res: function () {
+      return item('res', 'n' + idx, '新赛事', field('rn:n' + idx, '赛事名称', '') +
+        '<div class="five">' + field('r1:n' + idx, '报名组', 0, 'sm') +
+        field('r2:n' + idx, '报名人次', 0, 'sm') + field('r3:n' + idx, '获奖组', 0, 'sm') +
+        field('r4:n' + idx, '获奖人次', 0, 'sm') + field('r5:n' + idx, '获奖率 %', '0.0', 'sm') + '</div>');
+    },
+    ct: function () {
+      return item('ct', 'n' + idx, '新联系', field('cl:n' + idx, '标签', '') +
+        field('cv:n' + idx, '内容', '') + field('cs:n' + idx, '说明', '') +
+        field('ch:n' + idx, '链接（电话填 tel:138… ）', ''));
+    },
+    orgc: function () {
+      return item('orgc', 'n' + idx, '新项', field('ocv:n' + idx, '姓名 / 数值', '') +
+        field('ocs:n' + idx, '说明', ''));
+    }
+  };
+  var h = F[kind]; if (!h) return;
+  var tmp = document.createElement('div'); tmp.innerHTML = h();
+  var node = tmp.firstChild;
+  box.appendChild(node);
+  bindAll(node);
+  node.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  var first = $('[data-k]', node); if (first) first.focus();
+  toast('已新增，可直接填写');
+}
+
+/* =======================================================================
+   导出：把界面改动应用到源码
+   ======================================================================= */
+function collect() {
+  var out = [];
+  LIVE.forEach(function (v, k) { out.push([k, v.el.value]); });
+  return out;
+}
+
+/* 文本字段替换（保留标签与缩进，只换文本节点） */
+function replaceText(src, sel, i, val, d) {
+  var nodes = $$(sel, d);
+  var n = nodes[i || 0];
+  if (!n) return src;
+  // 源码中该节点的文本：用 innerHTML 的原样值定位
+  var old = n.innerHTML.replace(/\s+/g, ' ').trim();
+  var needle = esc(old);
+  if (src.indexOf(needle) < 0) needle = old;
+  if (src.indexOf(needle) < 0) return src;
+  return src.replace(needle, esc(val));
+}
+
+/* 数组字段：整块替换 */
+function replaceInBlock(src, startRe, endRe, build) {
+  var m = src.match(startRe);
+  if (!m) return src;
+  var head = src.slice(0, m.index);
+  var rest = src.slice(m.index);
+  var e = rest.search(endRe);
+  if (e < 0) return src;
+  return head + build(m[0]) + rest.slice(e);
+}
+
+function buildOutput() {
+  var pairs = {};
+  collect().forEach(function (p) { pairs[p[0]] = p[1]; });
+
+  var s = SRC;
+
+  /* --- 1. 删除标记的条目 --- */
+  $$('[data-gone]', $('#main')).forEach(function (n) {
+    var kind = n.getAttribute('data-kind'), i = n.getAttribute('data-i');
+    if (kind === 'tl') s = delTl(s, i);
+    if (kind === 'news') s = delNews(s, i);
+    if (kind === 'ct') s = delCt(s, i);
+    if (kind === 'dept') s = delDept(s, i);
+  });
+
+  /* --- 2. 新增条目 --- */
+  Object.keys(SEQ).forEach(function (kind) { /* 已在下方按类型处理 */ });
+
+  var news = [];
+  Object.keys(pairs).forEach(function (k) {
+    var p = k.split('::'); if (p[0] === 'nd' && p[1][0] === 'n') news.push(p[1].slice(1));
+  });
+  news.forEach(function (nid) { s = addNews(s, pairs, nid); });
+
+  var tls = [];
+  Object.keys(pairs).forEach(function (k) {
+    var p = k.split('::'); if (p[0] === 'tlt' && p[1][0] === 'n') tls.push(p[1].slice(1));
+  });
+  tls.forEach(function (nid) { s = addTl(s, pairs, nid); });
+
+  var cts = [];
+  Object.keys(pairs).forEach(function (k) {
+    var p = k.split('::'); if (p[0] === 'cv' && p[1][0] === 'n') cts.push(p[1].slice(1));
+  });
+  cts.forEach(function (nid) { s = addCt(s, pairs, nid); });
+
+  var dps = [];
+  Object.keys(pairs).forEach(function (k) {
+    var p = k.split('::'); if (p[0] === 'dn' && p[1][0] === 'n') dps.push(p[1].slice(1));
+  });
+  dps.forEach(function (nid) { s = addDept(s, pairs, nid); });
+
+  /* --- 3. 赛事数据：整块重建（自动重算合计） --- */
+  // 仅当成绩相关字段被真正改动过才重建，避免每次导出都重写整块
+  var rk = Array.from(DIRTY).filter(function (k) { return /^r[1-5]::/.test(k) || /^r[1-5]:n/.test(k) || k.indexOf('rn::') === 0 || k.indexOf('rn:n') === 0; });
+  if (rk.length) s = rebuildResults(s, pairs);
+
+  /* --- 4. 普通文本字段 --- */
+  var d = new DOMParser().parseFromString(s, 'text/html');
+
+  // 区块标题与导语
+  Object.keys(pairs).forEach(function (k) {
+    var p = k.split('::'); if (p[0] !== 'h2' && p[0] !== 'lead') return;
+    var sec = d.getElementById(p[1]); if (!sec) return;
+    if (p[0] === 'h2') s = replaceText(s, '#' + p[1] + ' .h2.sec', 0, pairs[k], d);
+    else s = replaceText(s, '#' + p[1] + ' .lead', 0, pairs[k], d);
+  });
+
+  // 历程
+  var tlKeys = Object.keys(pairs).filter(function (k) { return /tl[ytdb]::\d+$/.test(k); });
+  tlKeys.forEach(function (k) {
+    var p = k.split('::'), sel = { tly: '.tl-y', tlt: '.tl-t', tld: '.tl-d', tlb: '.tl-badge' }[p[0]];
+    if (!sel) return;
+    s = replaceNth(s, '#history .tl-i', sel, +p[1], pairs[k], d);
+  });
+
+  // 部门
+  Object.keys(pairs).forEach(function (k) {
+    var p = k.split('::');
+    if (['dn', 'dd', 'dc'].indexOf(p[0]) < 0 || p[1][0] === 'n') return;
+    var sel = { dn: '.dn', dd: '.dd', dc: '.dc' }[p[0]];
+    s = replaceNth(s, '#org .dept', sel, +p[1], pairs[k], d);
+  });
+  Object.keys(pairs).forEach(function (k) {
+    var p = k.split('::');
+    if (['ocv', 'ocs'].indexOf(p[0]) < 0 || p[1][0] === 'n') return;
+    s = replaceNth(s, '#org .card .grid > div', p[0] === 'ocv' ? '.c-val' : '.c-sub', +p[1], pairs[k], d);
+  });
+
+  // 新闻
+  Object.keys(pairs).forEach(function (k) {
+    var p = k.split('::');
+    if (['nd', 'nk', 'nt', 'np'].indexOf(p[0]) < 0 || p[1][0] === 'n') return;
+    var sel = { nd: '.n-date', nk: '.n-kind', nt: '.n-bd h3', np: '.n-bd p' }[p[0]];
+    s = replaceNth(s, '#news .n-item', sel, +p[1], pairs[k], d);
+  });
+
+  // 联系
+  Object.keys(pairs).forEach(function (k) {
+    var p = k.split('::');
+    if (['cl', 'cv', 'cs'].indexOf(p[0]) < 0 || p[1][0] === 'n') return;
+    var sel = { cl: '.c-lab', cv: '.c-val', cs: '.c-sub' }[p[0]];
+    s = replaceNth(s, '#contact .c-card', sel, +p[1], pairs[k], d);
+    if (p[0] === 'ch') s = replaceHref(s, +p[1], pairs[k]);
+  });
+
+  // 首屏
+  var hq = { hq: null };
+  if (pairs['hq::s'] != null) s = replaceText(s, '.slogan', 0, pairs['hq::s'], d);
+  if (pairs['hq::b'] != null) {
+    var m2 = s.match(/<em>([\s\S]*?)<\/em>/);
+    if (m2) s = s.replace(m2[0], '<em>' + esc(pairs['hq::b']) + '</em>');
+  }
+  if (pairs['hq::s2'] != null) s = replaceText(s, '.slogan2', 0, pairs['hq::s2'], d);
+  if (pairs['hq::en'] != null) s = replaceText(s, '.hero-in .en', 0, pairs['hq::en'], d);
+  if (pairs['hq::badge'] != null) s = replaceText(s, '.hero-badge', 0, pairs['hq::badge'], d);
+
+  return s;
+}
+
+/* 按容器序号替换子元素文本 */
+function replaceNth(src, contSel, childSel, idx, val, d) {
+  var c = $$(contSel, d)[idx];
+  if (!c) return src;
+  var n = $(childSel, c);
+  if (!n) return src;
+  var old = n.innerHTML.replace(/\s+/g, ' ').trim();
+  var needle = esc(old); if (src.indexOf(needle) < 0) needle = old;
+  if (src.indexOf(needle) < 0) return src;
+  // 仅替换最后一次出现前的第一个匹配（避免同名多处被误改）
+  return src.replace(needle, esc(val));
+}
+function replaceHref(src, idx, val) {
+  var re = /href="tel:[^"]*"/g, m, n = 0;
+  var arr = src.match(re) || [];
+  if (!arr[idx]) return src;
+  var old = arr[idx];
+  return src.replace(old, 'href="' + esc(val.startsWith('tel:') ? val : 'tel:' + val) + '"');
+}
+
+/* ---- 删条目：用「定位原文片段」方式切除，避免正则吃掉整份文档 ----
+   做法：把目标条目的 outerHTML 在原文中定位出来（保留缩进），按出现顺序切掉。
+   若定位失败则跳过并记录，不做任何破坏性操作。 */
+function cutNode(src, node, cls) {
+  if (!node || !cls) return src;
+  // 用 outerHTML 的第一段做锚点：class 声明 + 其后 200 字符
+  var html = node.outerHTML;
+  var idx = src.indexOf(html);
+  if (idx < 0) {
+    // 退化：只取开头标签做锚点
+    var tag = html.match(/^<[a-z]+[^>]*class="[^"]*\b' + cls + '\b[^"]*"[^>]*>/);
+    if (!tag) return src;
+    idx = src.indexOf(tag[0]);
+    if (idx < 0) return src;
+    // 从标签起点向后找到对应闭合
+    var name = tag[0].match(/^<([a-z]+)/)[1];
+    var close = '</' + name + '>';
+    var ci = src.indexOf(close, idx);
+    if (ci < 0) return src;
+    var endIdx = ci + close.length;
+  } else {
+    var endIdx = idx + html.length;
+  }
+  // 连带吃掉前面一行缩进
+  var lineStart = src.lastIndexOf('\n', idx) + 1;
+  var lead = src.slice(lineStart, idx);
+  if (/^[ \t]*$/.test(lead)) idx = lineStart;
+  // 连带吃掉后面紧跟的换行
+  var after = src.slice(endIdx, endIdx + 2);
+  if (/^\r?\n/.test(after)) endIdx += (after[0] === '\r' ? 2 : 1);
+  return src.slice(0, idx) + src.slice(endIdx);
+}
+
+function delTl(src, i) {
+  var d = new DOMParser().parseFromString(src, 'text/html');
+  var n = $$('#history .tl-i', d)[+i];
+  return cutNode(src, n, 'tl-i');
+}
+function delNews(src, i) {
+  var d = new DOMParser().parseFromString(src, 'text/html');
+  var n = $$('#news .n-item', d)[+i];
+  return cutNode(src, n, 'n-item');
+}
+function delCt(src, i) {
+  var d = new DOMParser().parseFromString(src, 'text/html');
+  var n = $$('#contact .c-card', d)[+i];
+  return cutNode(src, n, 'c-card');
+}
+function delDept(src, i) {
+  var d = new DOMParser().parseFromString(src, 'text/html');
+  var n = $$('#org .dept', d)[+i];
+  return cutNode(src, n, 'dept');
+}
+
+/* ---- 增条目：在容器最后一个同类节点之后插入 ---- */
+function insertAfterLast(src, containerSel, childSel, markup, cls, pickLast) {
+  var d = new DOMParser().parseFromString(src, 'text/html');
+  var cont;
+  if (pickLast) {
+    var all = $$(containerSel, d);
+    cont = all[all.length - 1];
+  } else {
+    cont = $(containerSel, d);
+  }
+  if (!cont) return src;
+  var kids = $$(childSel, cont);
+  if (!kids.length) return src;
+  var last = kids[kids.length - 1];
+  var at = src.indexOf(last.outerHTML);
+  if (at < 0) {
+    var name = last.tagName.toLowerCase();
+    var close = '</' + name + '>';
+    var ci = src.lastIndexOf(close);
+    if (ci < 0) return src;
+    at = ci;
+  } else {
+    at = at + last.outerHTML.length;
+  }
+  return src.slice(0, at) + '\n        ' + markup + src.slice(at);
+}
+
+function addNews(src, P, nid) {
+  var date = (P['nd:n' + nid] || '').trim(), kind = (P['nk:n' + nid] || '').trim();
+  var h = '<article class="n-item">' +
+    '<div class="n-date">' + esc(date) + '<span>' + esc(kind) + '</span></div>' +
+    '<div class="n-bd">' +
+    '<h3>' + esc(P['nt:n' + nid] || '') + '</h3>' +
+    '<p>' + esc(P['np:n' + nid] || '') + '</p>' +
+    '<span class="n-kind">' + esc(kind) + '</span>' +
+    '</div></article>';
+  return insertAfterLast(src, '#news .news-list', '.n-item', h, 'n-item');
+}
+function addTl(src, P, nid) {
+  var badge = (P['tlb:n' + nid] || '').trim();
+  var h = '<div class="tl-i">' +
+    '<div class="tl-y">' + esc(P['tly:n' + nid] || '') + '</div>' +
+    '<div class="tl-t">' + esc(P['tlt:n' + nid] || '') + '</div>' +
+    '<div class="tl-d">' + esc(P['tld:n' + nid] || '') + '</div>' +
+    (badge ? '<span class="tl-badge b">' + esc(badge) + '</span>' : '') +
+    '</div>';
+  return insertAfterLast(src, '#history .tl', '.tl-i', h, 'tl-i', true);
+}
+function addCt(src, P, nid) {
+  var href = (P['ch:n' + nid] || '').trim();
+  if (href && !/^(tel:|https?:|mailto:)/.test(href)) href = 'tel:' + href;
+  var h = '<a class="c-card"' + (href ? ' href="' + esc(href) + '"' : '') + '>' +
+    '<div class="c-lab">' + esc(P['cl:n' + nid] || '') + '</div>' +
+    '<div class="c-val">' + esc(P['cv:n' + nid] || '') + '</div>' +
+    '<div class="c-sub">' + esc(P['cs:n' + nid] || '') + '</div></a>';
+  return insertAfterLast(src, '#contact .contact', '.c-card', h, 'c-card');
+}
+function addDept(src, P, nid) {
+  var h = '<div class="dept">' +
+    '<div class="dn">' + esc(P['dn:n' + nid] || '') + '</div>' +
+    '<div class="dd">' + esc(P['dd:n' + nid] || '') + '</div>' +
+    '<div class="dc">' + esc(P['dc:n' + nid] || '') + '</div></div>';
+  return insertAfterLast(src, '#org .depts', '.dept', h, 'dept');
+}
+
+/* ---- 赛事整块重建 + 自动重算 ---- */
+function rebuildResults(src, P) {
+  // 收集所有 rn（名称）作为行标识，保持界面顺序
+  var rows = [];
+  $$('#box-res .it', $('#main')).forEach(function (n) {
+    var i = n.getAttribute('data-i'); if (n.getAttribute('data-gone')) return;
+    var g = function (pre) {
+      var el = n.querySelector('[data-k="' + pre + '::' + i + '"]');
+      return el ? el.value.trim() : '';
+    };
+    var name = g('rn'); if (!name) return;
+    var n1 = +g('r1') || 0, n2 = +g('r2') || 0, n3 = +g('r3') || 0, n4 = +g('r4') || 0;
+    var rate = n1 > 0 ? +(n3 / n1 * 100).toFixed(1) : 0;
+    rows.push({ name: name, a: n1, b: n2, c: n3, d: n4, e: rate });
+  });
+  if (!rows.length) return src;
+
+  var tot = rows.reduce(function (a, r) {
+    return { a: a.a + r.a, b: a.b + r.b, c: a.c + r.c, d: a.d + r.d };
+  }, { a: 0, b: 0, c: 0, d: 0 });
+  var totRate = tot.a > 0 ? (tot.c / tot.a * 100).toFixed(1) : '0.0';
+
+  var body = rows.map(function (r) {
+    return '["' + r.name.replace(/"/g, '\\"') + '",' + r.a + ',' + r.b + ',' + r.c + ',' + r.d + ',' + r.e.toFixed(1) + ']';
+  }).join(',\n');
+
+  var block = 'var RESULTS=[\n' + body + '];';
+  var s2 = src.replace(/var RESULTS=\[[\s\S]*?\];/, function () { return block; });
+
+  // 同步合计行：项数 / 报名人次 / 获奖组 / 获奖人次 / 组获奖率
+  s2 = s2.replace(/(<td>合计（)\d+( 项）<\/td>)/, function (m, a, b) {
+    return a + rows.length + b;
+  });
+  s2 = s2.replace(/(<td>合计（[\s\S]*?<td class="n">)\d+(<\/td>)/, function (m, a, b) {
+    return a + tot.b.toLocaleString() + b;
+  });
+  s2 = s2.replace(/(<td>合计（[\s\S]*?<td class="n">[\s\S]*?<td class="n">)\d+(<\/td>)/, function (m, a, b) {
+    return a + tot.c.toLocaleString() + b;
+  });
+  s2 = s2.replace(/(<td>合计（[\s\S]*?<td class="n">[\s\S]*?<td class="n">[\s\S]*?<td class="n">)\d+(<\/td>)/, function (m, a, b) {
+    return a + tot.d.toLocaleString() + b;
+  });
+  s2 = s2.replace(/(<td>合计（[\s\S]*?)([\d.]+)(%<\/td>)/, function (m, a, b, c) {
+    return a + totRate + c;
+  });
+
+  // KPI 卡片：报名人次 / 获奖人次 / 人次获奖率
+  s2 = s2.replace(/(<b data-c=")\d+(">)\d+(<\/b>\s*<span>报名人次（)\d+( 组）)/, function (m, a, b, c, d) {
+    return a + '2953' + b + tot.b.toLocaleString() + c + tot.b + d;
+  });
+  s2 = s2.replace(/(<b data-c=")\d+(">)\d+(<\/b>\s*<span>获奖人次（)\d+( 组）)/, function (m, a, b, c, d) {
+    return a + '1330' + b + tot.d.toLocaleString() + c + tot.d + d;
+  });
+  var pr = tot.b > 0 ? (tot.d / tot.b * 100).toFixed(1) : '0.0';
+  s2 = s2.replace(/(<b data-c=")[\d.]+(" data-suffix="%">)[\d.]+(<\/b>)/, function (m, a, b, c) {
+    return a + pr + b + pr + c;
+  });
+
+  updateCalc(rows, tot);
+  return s2;
+}
+function updateCalc(rows, tot) {
+  var el = $('#calc'); if (!el) return;
+  var pr = tot.b > 0 ? (tot.d / tot.b * 100).toFixed(1) : '0.0';
+  var tr = tot.a > 0 ? (tot.c / tot.a * 100).toFixed(1) : '0.0';
+  el.innerHTML = '自动合计（保存时写入页面）：<b>' + rows.length + '</b> 项 · 报名 <b>' +
+    tot.a.toLocaleString() + '</b> 组 / <b>' + tot.b.toLocaleString() + '</b> 人次 · ' +
+    '获奖 <b>' + tot.c.toLocaleString() + '</b> 组 / <b>' + tot.d.toLocaleString() + '</b> 人次 · ' +
+    '组获奖率 <b>' + tr + '%</b> · 人次获奖率 <b>' + pr + '%</b>';
+}
+
+/* 绑定成绩表实时重算 */
+document.addEventListener('input', function (e) {
+  var k = e.target.getAttribute('data-k'); if (!k) return;
+  if (!/^r[1-5](::| :)/.test(k) && k.indexOf('r1') !== 0) return;
+  var P = {}; collect().forEach(function (p) { P[p[0]] = p[1]; });
+  rebuildResults(SRC, P);
+});
+
+/* ---------- 交互 ---------- */
+$('#btnPrev').addEventListener('click', function () {
+  var out = buildOutput();
+  $('#pvF').srcdoc = out;
+  $('#pv').classList.add('on');
+});
+$('#pvClose').addEventListener('click', function () { $('#pv').classList.remove('on'); });
+$('#btnReset').addEventListener('click', function () {
+  if (!DIRTY.size) return;
+  if (!confirm('放弃当前全部改动，重新载入？')) return;
+  location.reload();
+});
+$('#btnExport').addEventListener('click', function () {
+  var out;
+  try { out = buildOutput(); }
+  catch (err) { toast('生成失败：' + err.message); return; }
+  $('#out').value = out;
+  $('#mdl').classList.add('on');
+  toast('已生成，体积 ' + (out.length / 1024).toFixed(1) + ' KB');
+});
+$('#mClose').addEventListener('click', function () { $('#mdl').classList.remove('on'); });
+$('#btnCopy').addEventListener('click', function () {
+  var t = $('#out');
+  t.select(); t.setSelectionRange(0, 9999999);
+  try { document.execCommand('copy'); toast('已复制到剪贴板'); }
+  catch (e) { toast('复制失败，请手动全选复制'); }
+});
+$('#btnDl').addEventListener('click', function () {
+  var blob = new Blob([$('#out').value], { type: 'text/html;charset=utf-8' });
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = 'index.html';
+  document.body.appendChild(a); a.click();
+  setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1500);
+  toast('已下载 index.html');
+});
+
+/* 快捷键：Ctrl+S 导出，Esc 关弹窗 */
+document.addEventListener('keydown', function (e) {
+  if ((e.ctrlKey || e.metaKey) && e.key === 's') { e.preventDefault(); $('#btnExport').click(); }
+  if (e.key === 'Escape') { $('#pv').classList.remove('on'); $('#mdl').classList.remove('on'); }
+});
+
+/* 附加样式：五列数字输入 */
+var st = document.createElement('style');
+st.textContent = '.five{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}' +
+  '@media(max-width:700px){.five{grid-template-columns:1fr 1fr}}';
+document.head.appendChild(st);
+
+
+
+load();
+</script>
+</body>
+</html>
