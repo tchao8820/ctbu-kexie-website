@@ -283,6 +283,32 @@ tbody tr:nth-child(-n+3) .rank{color:var(--teal);font-weight:600}
   background:var(--teal-t);z-index:0}
 .bar-cell span{position:relative;z-index:1;font-size:13px;font-weight:600;color:var(--ink)}
 
+/* ============ 荣誉与获奖 ============ */
+.honor-cols{display:grid;grid-template-columns:1fr 1fr;gap:44px;align-items:start;
+  margin-top:38px}
+.sub-h{font-family:var(--serif);font-size:19px;color:var(--ink);font-weight:600;
+  padding-bottom:12px;border-bottom:2px solid var(--ink);margin-bottom:6px}
+.sub-lead{font-size:13.5px;color:var(--muted);line-height:1.8;margin:14px 0 18px}
+/* 集体荣誉：学年 | 荣誉，规则线行 */
+.hlist{border-bottom:1px solid var(--rule)}
+.hlist li{display:grid;grid-template-columns:104px 1fr;gap:18px;padding:14px 0;
+  border-top:1px solid var(--rule);transition:border-color .18s}
+.hlist li:hover{border-color:var(--rule-dark)}
+.h-y{font-family:var(--mono);font-size:12.5px;color:var(--ink);font-weight:600}
+.h-n{font-size:14.5px;color:var(--ink-2);line-height:1.7}
+.tbl-awards{min-width:0}
+.tbl-awards th,.tbl-awards td{padding:9px 14px}
+.tbl-awards td.name{font-family:var(--mono);font-weight:400}
+/* 证书墙 */
+.certs{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:26px}
+.certs figure{margin:0;background:var(--white);border:1px solid var(--rule);
+  transition:border-color .18s}
+.certs figure:hover{border-color:var(--rule-dark)}
+.certs img{width:100%;height:auto;aspect-ratio:4/3;object-fit:cover}
+.certs figcaption{padding:11px 13px 13px;border-top:1px solid var(--rule);
+  font-size:12.5px;color:var(--ink-2);line-height:1.6}
+.certs-grid-title{margin-top:52px}
+
 /* ============ 成员 ============ */
 .memb{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
 .memb figure{margin:0;background:var(--white);border:1px solid var(--rule);transition:border-color .18s}
@@ -421,6 +447,8 @@ html.anim .rv.in>*:nth-child(n+6){animation-delay:340ms}
   .sec-head{grid-template-columns:104px 1fr;gap:30px}
   .hero-grid{grid-template-columns:1fr;gap:40px;align-items:start;padding:44px 0 40px}
   .hero-vis{max-width:560px}
+  .honor-cols{grid-template-columns:1fr;gap:38px}
+  .certs{grid-template-columns:repeat(3,1fr)}
   .depts{grid-template-columns:repeat(2,1fr)}
   .dept{border-top:1px solid var(--rule)}
   .dept:nth-child(odd){border-left:0}
@@ -454,6 +482,8 @@ html.anim .rv.in>*:nth-child(n+6){animation-delay:340ms}
   .sec-no em{margin-top:0}
   .sec-no span{margin-top:0;flex:1}
   .g2,.g3,.g4,.memb,.org-cards,.contact-info{grid-template-columns:1fr}
+  .hlist li{grid-template-columns:1fr;gap:4px;padding:13px 0}
+  .certs{grid-template-columns:repeat(2,1fr);gap:14px}
   .org-cards>div,.contact-info>div{border-left:0;border-top:1px solid var(--rule)}
   .org-cards>div:first-child,.contact-info>div:first-child{border-top:0}
   .org-top{grid-template-columns:1fr}
@@ -709,11 +739,69 @@ html.anim .rv.in>*:nth-child(n+6){animation-delay:340ms}
   </div>
 </section>
 
+<!-- ============ 荣誉与获奖 ============ -->
+<section id="honors" class="tint">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="sec-no"><b>06</b><em>Honors</em><span></span></div>
+      <div class="sec-main">
+        <h2 class="sec">{{sections.honors.title}}</h2>
+        <p class="lead">{{sections.honors.lead}}</p>
+      </div>
+    </div>
+    <div class="kpis rv">{{#sections.honors.kpis}}
+        <div class="kpi"><b data-c="{{value}}"{{#suffix}} data-suffix="{{suffix}}"{{/suffix}}>{{display}}</b><span>{{label}}</span></div>{{/sections.honors.kpis}}
+      </div>
+    <div class="honor-cols">
+      <div class="rv">
+        <h3 class="sub-h">{{sections.honors.groupsTitle}}</h3>
+        <ul class="hlist">{{#sections.honors.groups}}
+          <li><span class="h-y">{{year}}</span><span class="h-n">{{honors}}</span></li>{{/sections.honors.groups}}
+        </ul>
+      </div>
+      <div class="rv">
+        <h3 class="sub-h">{{sections.honors.awardsTitle}}</h3>
+        <p class="sub-lead">{{sections.honors.awardsLead}}</p>
+        <div class="tbl-wrap">
+          <table class="tbl-awards">
+            <thead>
+              <tr>
+                <th scope="col">学年</th>
+                <th scope="col" class="n">国家级</th>
+                <th scope="col" class="n">省部级</th>
+              </tr>
+            </thead>
+            <tbody>{{#sections.honors.awards}}
+              <tr><td class="name">{{year}}</td><td class="n">{{national}}</td><td class="n">{{province}}</td></tr>{{/sections.honors.awards}}
+            </tbody>
+            <tfoot>
+              <tr>
+                <td scope="row">本表合计</td>
+                <td class="n">{awardNationalSum}</td>
+                <td class="n">{awardProvinceSum}</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+        <p class="note">{{sections.honors.awardsNote}}</p>
+      </div>
+    </div>
+    <h3 class="sub-h certs-grid-title rv">{{sections.honors.certsTitle}}</h3>
+    <p class="sub-lead rv">{{sections.honors.certsLead}}</p>
+    <div class="certs rv">{{#sections.honors.certs}}
+      <figure data-img="{{img}}" data-cap="{{cap}}">
+        <img src="{{img}}" alt="{{cap}}" loading="lazy" width="480" height="360">
+        <figcaption>{{cap}}</figcaption>
+      </figure>{{/sections.honors.certs}}
+    </div>
+  </div>
+</section>
+
 <!-- ============ 成员风采 ============ -->
 <section id="member" class="tint">
   <div class="wrap">
     <div class="sec-head rv">
-      <div class="sec-no"><b>06</b><em>Members</em><span></span></div>
+      <div class="sec-no"><b>07</b><em>Members</em><span></span></div>
       <div class="sec-main">
         <h2 class="sec">{{sections.member.title}}</h2>
         <p class="lead">{{sections.member.lead}}</p>
@@ -735,7 +823,7 @@ html.anim .rv.in>*:nth-child(n+6){animation-delay:340ms}
 <section id="news">
   <div class="wrap">
     <div class="sec-head rv">
-      <div class="sec-no"><b>07</b><em>News</em><span></span></div>
+      <div class="sec-no"><b>08</b><em>News</em><span></span></div>
       <div class="sec-main">
         <h2 class="sec">{{sections.news.title}}</h2>
         <p class="lead">{{sections.news.lead}}</p>
@@ -766,7 +854,7 @@ html.anim .rv.in>*:nth-child(n+6){animation-delay:340ms}
 <section id="join" class="tint">
   <div class="wrap">
     <div class="sec-head rv">
-      <div class="sec-no"><b>08</b><em>Join us</em><span></span></div>
+      <div class="sec-no"><b>09</b><em>Join us</em><span></span></div>
       <div class="sec-main">
         <h2 class="sec">{{sections.join.title}}</h2>
         <p class="lead">{{sections.join.lead}}</p>
@@ -794,7 +882,7 @@ html.anim .rv.in>*:nth-child(n+6){animation-delay:340ms}
 <section id="contact">
   <div class="wrap">
     <div class="sec-head rv">
-      <div class="sec-no"><b>09</b><em>Contact</em><span></span></div>
+      <div class="sec-no"><b>10</b><em>Contact</em><span></span></div>
       <div class="sec-main">
         <h2 class="sec">{{sections.contact.title}}</h2>
         <p class="lead">{{sections.contact.lead}}</p>

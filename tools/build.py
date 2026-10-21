@@ -154,7 +154,8 @@ def render(nodes, ctx):
 DERIVED_KEYS = ("count", "signupGroups", "signupPeople", "awardGroups",
                 "awardPeople", "rateByGroup", "rateByPeople",
                 "memberCount", "memberRatio", "topAwardGroups",
-                "topAwardPeople", "topAwardRatio")
+                "topAwardPeople", "topAwardRatio",
+                "awardNationalSum", "awardProvinceSum")
 
 
 def derive(data):
@@ -168,6 +169,7 @@ def derive(data):
     member_count = int(member[0]["value"])
     member_from = int(member[3]["value"])
     top = max(rows, key=lambda r: r["awardPeople"])
+    history_awards = data["sections"]["honors"]["awards"]
     return {
         "count": str(len(rows)),
         "signupGroups": str(signup_groups),
@@ -181,6 +183,8 @@ def derive(data):
         "topAwardGroups": str(top["awardGroups"]),
         "topAwardPeople": str(top["awardPeople"]),
         "topAwardRatio": "%.1f" % (top["awardPeople"] * 100.0 / award_people),
+        "awardNationalSum": str(sum(a["national"] for a in history_awards)),
+        "awardProvinceSum": str(sum(a["province"] for a in history_awards)),
     }
 
 
@@ -385,7 +389,9 @@ def build():
 
     toks = scan(template)
     nodes, _ = parse(toks, 0, ())
-    return render(nodes, [data])
+    # 渲染后再展开一次：数据层在渲染前已展开，但模板里直接写的 {key}
+    # （例如表格合计行）只有在这一步才会被替换，否则会原样穿到页面上。
+    return expand(render(nodes, [data]), derived)
 
 
 def main():

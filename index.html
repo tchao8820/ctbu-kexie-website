@@ -341,6 +341,32 @@ tbody tr:nth-child(-n+3) .rank{color:var(--teal);font-weight:600}
   background:var(--teal-t);z-index:0}
 .bar-cell span{position:relative;z-index:1;font-size:13px;font-weight:600;color:var(--ink)}
 
+/* ============ 荣誉与获奖 ============ */
+.honor-cols{display:grid;grid-template-columns:1fr 1fr;gap:44px;align-items:start;
+  margin-top:38px}
+.sub-h{font-family:var(--serif);font-size:19px;color:var(--ink);font-weight:600;
+  padding-bottom:12px;border-bottom:2px solid var(--ink);margin-bottom:6px}
+.sub-lead{font-size:13.5px;color:var(--muted);line-height:1.8;margin:14px 0 18px}
+/* 集体荣誉：学年 | 荣誉，规则线行 */
+.hlist{border-bottom:1px solid var(--rule)}
+.hlist li{display:grid;grid-template-columns:104px 1fr;gap:18px;padding:14px 0;
+  border-top:1px solid var(--rule);transition:border-color .18s}
+.hlist li:hover{border-color:var(--rule-dark)}
+.h-y{font-family:var(--mono);font-size:12.5px;color:var(--ink);font-weight:600}
+.h-n{font-size:14.5px;color:var(--ink-2);line-height:1.7}
+.tbl-awards{min-width:0}
+.tbl-awards th,.tbl-awards td{padding:9px 14px}
+.tbl-awards td.name{font-family:var(--mono);font-weight:400}
+/* 证书墙 */
+.certs{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:26px}
+.certs figure{margin:0;background:var(--white);border:1px solid var(--rule);
+  transition:border-color .18s}
+.certs figure:hover{border-color:var(--rule-dark)}
+.certs img{width:100%;height:auto;aspect-ratio:4/3;object-fit:cover}
+.certs figcaption{padding:11px 13px 13px;border-top:1px solid var(--rule);
+  font-size:12.5px;color:var(--ink-2);line-height:1.6}
+.certs-grid-title{margin-top:52px}
+
 /* ============ 成员 ============ */
 .memb{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
 .memb figure{margin:0;background:var(--white);border:1px solid var(--rule);transition:border-color .18s}
@@ -479,6 +505,8 @@ html.anim .rv.in>*:nth-child(n+6){animation-delay:340ms}
   .sec-head{grid-template-columns:104px 1fr;gap:30px}
   .hero-grid{grid-template-columns:1fr;gap:40px;align-items:start;padding:44px 0 40px}
   .hero-vis{max-width:560px}
+  .honor-cols{grid-template-columns:1fr;gap:38px}
+  .certs{grid-template-columns:repeat(3,1fr)}
   .depts{grid-template-columns:repeat(2,1fr)}
   .dept{border-top:1px solid var(--rule)}
   .dept:nth-child(odd){border-left:0}
@@ -512,6 +540,8 @@ html.anim .rv.in>*:nth-child(n+6){animation-delay:340ms}
   .sec-no em{margin-top:0}
   .sec-no span{margin-top:0;flex:1}
   .g2,.g3,.g4,.memb,.org-cards,.contact-info{grid-template-columns:1fr}
+  .hlist li{grid-template-columns:1fr;gap:4px;padding:13px 0}
+  .certs{grid-template-columns:repeat(2,1fr);gap:14px}
   .org-cards>div,.contact-info>div{border-left:0;border-top:1px solid var(--rule)}
   .org-cards>div:first-child,.contact-info>div:first-child{border-top:0}
   .org-top{grid-template-columns:1fr}
@@ -563,6 +593,7 @@ html.anim .rv.in>*:nth-child(n+6){animation-delay:340ms}
       <a href="#org">组织架构</a>
       <a href="#activity">活动与项目</a>
       <a href="#results">赛事成绩</a>
+      <a href="#honors">荣誉获奖</a>
       <a href="#member">成员风采</a>
       <a href="#news">新闻动态</a>
     </div>
@@ -578,6 +609,7 @@ html.anim .rv.in>*:nth-child(n+6){animation-delay:340ms}
       <a href="#org">组织架构</a>
       <a href="#activity">活动与项目</a>
       <a href="#results">赛事成绩</a>
+      <a href="#honors">荣誉获奖</a>
       <a href="#member">成员风采</a>
       <a href="#news">新闻动态</a>
       <a class="nav-cta" href="#join">加入协会</a>
@@ -992,11 +1024,122 @@ html.anim .rv.in>*:nth-child(n+6){animation-delay:340ms}
   </div>
 </section>
 
+<!-- ============ 荣誉与获奖 ============ -->
+<section id="honors" class="tint">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="sec-no"><b>06</b><em>Honors</em><span></span></div>
+      <div class="sec-main">
+        <h2 class="sec">荣誉与获奖</h2>
+        <p class="lead">集体荣誉取自协会历年荣誉档案与评选公示原件；竞赛成绩为省部级以上赛事的累计统计，均由协会归档文件逐项核对。</p>
+      </div>
+    </div>
+    <div class="kpis rv">
+        <div class="kpi"><b data-c="1122">1122</b><span>国家级奖项（累计至 2024 学年）</span></div>
+        <div class="kpi"><b data-c="819">819</b><span>省部级奖项（累计至 2024 学年）</span></div>
+        <div class="kpi"><b data-c="21000" data-suffix="+">21000+</b><span>科创月累计参与学生（名）</span></div>
+        <div class="kpi"><b data-c="3000" data-suffix="+">3000+</b><span>科创月累计参与团队（个）</span></div>
+      </div>
+    <div class="honor-cols">
+      <div class="rv">
+        <h3 class="sub-h">集体荣誉</h3>
+        <ul class="hlist">
+          <li><span class="h-y">2024—2025</span><span class="h-n">五星级社团 ·「五四」红旗团支部</span></li>
+          <li><span class="h-y">2023—2024</span><span class="h-n">五星级社团 · 优秀学生社团 · 全国高校「活力社团」· 先进团支部</span></li>
+          <li><span class="h-y">2022—2023</span><span class="h-n">四星级社团 · 优秀学生社团 · 先进团支部</span></li>
+          <li><span class="h-y">2021—2022</span><span class="h-n">优秀社团</span></li>
+          <li><span class="h-y">2023</span><span class="h-n">重庆市高校「一校一社一品」优秀学生社团项目品牌</span></li>
+          <li><span class="h-y">2022</span><span class="h-n">重庆市高校「一校一品」优秀团学工作品牌</span></li>
+          <li><span class="h-y">2023</span><span class="h-n">大学生暑期「三下乡」社会实践先进集体</span></li>
+          <li><span class="h-y">2011</span><span class="h-n">军训先进集体 · 学科竞赛先进集体</span></li>
+        </ul>
+      </div>
+      <div class="rv">
+        <h3 class="sub-h">省部级以上竞赛获奖（2006—2023 学年）</h3>
+        <p class="sub-lead">历年获奖数量按学年统计，数据取自协会《2006—2023 年省部级以上获奖情况统计》原件。</p>
+        <div class="tbl-wrap">
+          <table class="tbl-awards">
+            <thead>
+              <tr>
+                <th scope="col">学年</th>
+                <th scope="col" class="n">国家级</th>
+                <th scope="col" class="n">省部级</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td class="name">2006—2012</td><td class="n">66</td><td class="n">47</td></tr>
+              <tr><td class="name">2013</td><td class="n">21</td><td class="n">6</td></tr>
+              <tr><td class="name">2014</td><td class="n">48</td><td class="n">36</td></tr>
+              <tr><td class="name">2015</td><td class="n">56</td><td class="n">59</td></tr>
+              <tr><td class="name">2016</td><td class="n">92</td><td class="n">20</td></tr>
+              <tr><td class="name">2017</td><td class="n">72</td><td class="n">46</td></tr>
+              <tr><td class="name">2018</td><td class="n">84</td><td class="n">54</td></tr>
+              <tr><td class="name">2019</td><td class="n">31</td><td class="n">22</td></tr>
+              <tr><td class="name">2020</td><td class="n">23</td><td class="n">23</td></tr>
+              <tr><td class="name">2021</td><td class="n">89</td><td class="n">43</td></tr>
+              <tr><td class="name">2022</td><td class="n">106</td><td class="n">92</td></tr>
+              <tr><td class="name">2023</td><td class="n">133</td><td class="n">165</td></tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <td scope="row">本表合计</td>
+                <td class="n">821</td>
+                <td class="n">613</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+        <p class="note">※ 口径说明：上表为《2006—2023 年省部级以上获奖情况统计》原件数值，区间止于 2023 学年；2024 年《校长荣誉奖申报材料》另按累计口径记录「国家级奖项 1122 项、省部级奖项 819 项」，两者统计区间与口径不同，本页按各自原件呈现，不作合并或换算。</p>
+      </div>
+    </div>
+    <h3 class="sub-h certs-grid-title rv">证书存档</h3>
+    <p class="sub-lead rv">下列证书均来自协会荣誉档案原件，点击可放大查看。</p>
+    <div class="certs rv">
+      <figure data-img="assets/img/honors/xingji-2425.jpg" data-cap="2024—2025 学年 五星级社团">
+        <img src="assets/img/honors/xingji-2425.jpg" alt="2024—2025 学年 五星级社团" loading="lazy" width="480" height="360">
+        <figcaption>2024—2025 学年 五星级社团</figcaption>
+      </figure>
+      <figure data-img="assets/img/honors/wusi-2425.jpg" data-cap="2024—2025 学年「五四」红旗团支部">
+        <img src="assets/img/honors/wusi-2425.jpg" alt="2024—2025 学年「五四」红旗团支部" loading="lazy" width="480" height="360">
+        <figcaption>2024—2025 学年「五四」红旗团支部</figcaption>
+      </figure>
+      <figure data-img="assets/img/honors/xingji-2324.jpg" data-cap="2023—2024 学年 五星级社团">
+        <img src="assets/img/honors/xingji-2324.jpg" alt="2023—2024 学年 五星级社团" loading="lazy" width="480" height="360">
+        <figcaption>2023—2024 学年 五星级社团</figcaption>
+      </figure>
+      <figure data-img="assets/img/honors/huoli-2324.jpg" data-cap="2023—2024 学年 全国高校「活力社团」">
+        <img src="assets/img/honors/huoli-2324.jpg" alt="2023—2024 学年 全国高校「活力社团」" loading="lazy" width="480" height="360">
+        <figcaption>2023—2024 学年 全国高校「活力社团」</figcaption>
+      </figure>
+      <figure data-img="assets/img/honors/youxiu-2324.jpg" data-cap="2023—2024 学年 优秀学生社团">
+        <img src="assets/img/honors/youxiu-2324.jpg" alt="2023—2024 学年 优秀学生社团" loading="lazy" width="480" height="360">
+        <figcaption>2023—2024 学年 优秀学生社团</figcaption>
+      </figure>
+      <figure data-img="assets/img/honors/zhibu-2324.jpg" data-cap="2023—2024 学年 先进团支部">
+        <img src="assets/img/honors/zhibu-2324.jpg" alt="2023—2024 学年 先进团支部" loading="lazy" width="480" height="360">
+        <figcaption>2023—2024 学年 先进团支部</figcaption>
+      </figure>
+      <figure data-img="assets/img/honors/xingji-2223.jpg" data-cap="2022—2023 学年 四星级社团">
+        <img src="assets/img/honors/xingji-2223.jpg" alt="2022—2023 学年 四星级社团" loading="lazy" width="480" height="360">
+        <figcaption>2022—2023 学年 四星级社团</figcaption>
+      </figure>
+      <figure data-img="assets/img/honors/youxiu-2223.jpg" data-cap="2022—2023 学年 优秀学生社团">
+        <img src="assets/img/honors/youxiu-2223.jpg" alt="2022—2023 学年 优秀学生社团" loading="lazy" width="480" height="360">
+        <figcaption>2022—2023 学年 优秀学生社团</figcaption>
+      </figure>
+      <figure data-img="assets/img/honors/zhibu-2223.jpg" data-cap="2022—2023 学年 先进团支部">
+        <img src="assets/img/honors/zhibu-2223.jpg" alt="2022—2023 学年 先进团支部" loading="lazy" width="480" height="360">
+        <figcaption>2022—2023 学年 先进团支部</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
 <!-- ============ 成员风采 ============ -->
 <section id="member" class="tint">
   <div class="wrap">
     <div class="sec-head rv">
-      <div class="sec-no"><b>06</b><em>Members</em><span></span></div>
+      <div class="sec-no"><b>07</b><em>Members</em><span></span></div>
       <div class="sec-main">
         <h2 class="sec">成员风采</h2>
         <p class="lead">第二十四届社团会员报名共 109 人（按学号去重），来源覆盖 8 个学院、3 个校区——社团以开放姿态欢迎全校各专业同学加入。</p>
@@ -1029,7 +1172,7 @@ html.anim .rv.in>*:nth-child(n+6){animation-delay:340ms}
 <section id="news">
   <div class="wrap">
     <div class="sec-head rv">
-      <div class="sec-no"><b>07</b><em>News</em><span></span></div>
+      <div class="sec-no"><b>08</b><em>News</em><span></span></div>
       <div class="sec-main">
         <h2 class="sec">新闻动态与公告</h2>
         <p class="lead">以下条目均取自协会归档的新闻稿原件，时间与标题未作改写。</p>
@@ -1096,7 +1239,7 @@ html.anim .rv.in>*:nth-child(n+6){animation-delay:340ms}
 <section id="join" class="tint">
   <div class="wrap">
     <div class="sec-head rv">
-      <div class="sec-no"><b>08</b><em>Join us</em><span></span></div>
+      <div class="sec-no"><b>09</b><em>Join us</em><span></span></div>
       <div class="sec-main">
         <h2 class="sec">加入协会</h2>
         <p class="lead">只要你是重庆工商大学全日制在读本科生或研究生，承认本社团章程、遵守规章制度，对科学技术有兴趣，都欢迎申请加入。</p>
@@ -1137,7 +1280,7 @@ html.anim .rv.in>*:nth-child(n+6){animation-delay:340ms}
 <section id="contact">
   <div class="wrap">
     <div class="sec-head rv">
-      <div class="sec-no"><b>09</b><em>Contact</em><span></span></div>
+      <div class="sec-no"><b>10</b><em>Contact</em><span></span></div>
       <div class="sec-main">
         <h2 class="sec">联系方式</h2>
         <p class="lead">下列信息取自协会《社团注册登记表》与《负责人登记表》，可直接点击拨打。</p>
@@ -1199,6 +1342,7 @@ html.anim .rv.in>*:nth-child(n+6){animation-delay:340ms}
         <a href="#org">组织架构</a>
         <a href="#activity">活动与项目</a>
         <a href="#results">赛事成绩</a>
+        <a href="#honors">荣誉获奖</a>
         <a href="#member">成员风采</a>
         <a href="#news">新闻动态</a>
       </div>

@@ -42,6 +42,7 @@ DERIVED_KEYS = (
     "count", "signupGroups", "signupPeople", "awardGroups", "awardPeople",
     "rateByGroup", "rateByPeople", "memberCount", "memberRatio",
     "topAwardGroups", "topAwardPeople", "topAwardRatio",
+    "awardNationalSum", "awardProvinceSum",
 )
 
 # 必填字段：路径 -> 期望类型（list / str / num）
@@ -70,6 +71,13 @@ REQUIRED = {
     "sections.activity.items": "list",
     "sections.results.title": "str",
     "sections.results.rows": "list",
+    "sections.honors.title": "str",
+    "sections.honors.lead": "str",
+    "sections.honors.kpis": "list",
+    "sections.honors.groups": "list",
+    "sections.honors.certs": "list",
+    "sections.honors.awards": "list",
+    "sections.honors.awardsNote": "str",
     "sections.member.title": "str",
     "sections.member.kpis": "list",
     "sections.member.figures": "list",
@@ -238,17 +246,31 @@ def check_assets(data, rep):
 
 
 def check_placeholders(data, rep):
-    """占位符合法性：{xxx} 的键名必须是已知的派生值。"""
+    """占位符合法性：{xxx} 的键名必须是已知的派生值。
+
+    数据与模板都要扫：模板里的 {key} 写错不会报错，而是原样穿到页面上，
+    属于最容易漏掉的失败模式（例如把 {count} 写成 {cont}）。
+    """
     pat = re.compile(r"\{([a-zA-Z][a-zA-Z0-9]*)\}")
     bad = []
     for path, val in walk_strings(data):
         for key in pat.findall(val):
             if key not in DERIVED_KEYS:
                 bad.append(f"{path} → {{{key}}}")
+    if os.path.isfile(TPL_PATH):
+        with open(TPL_PATH, encoding="utf-8") as fh:
+            tpl = fh.read()
+        # 模板里有大量 {{...}}（mustache）与 CSS 的 {}，先剔除再找单层 {key}
+        tpl_no_mustache = re.sub(r"\{\{.*?\}\}", " ", tpl, flags=re.S)
+        tpl_no_css = re.sub(r"\{[^{}]*\}", lambda m: m.group(0)
+                            if pat.fullmatch(m.group(0)) else " ", tpl_no_mustache)
+        for key in pat.findall(tpl_no_css):
+            if key not in DERIVED_KEYS:
+                bad.append(f"tools/template.html → {{{key}}}")
     for b in bad:
         rep.error(f"E 占位符：{b} 不是有效的派生值键名")
     if not bad:
-        rep.ok("E 占位符：全部占位符键名有效")
+        rep.ok("E 占位符：数据与模板中的占位符键名均有效")
 
 
 def check_build(rep):

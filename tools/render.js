@@ -18,6 +18,7 @@ const DERIVED_KEYS = [
   'count', 'signupGroups', 'signupPeople', 'awardGroups', 'awardPeople',
   'rateByGroup', 'rateByPeople', 'memberCount', 'memberRatio',
   'topAwardGroups', 'topAwardPeople', 'topAwardRatio',
+  'awardNationalSum', 'awardProvinceSum',
 ];
 
 const MISSING = Symbol('missing');
@@ -162,6 +163,7 @@ function derive(data) {
   const memberFrom = Number(member[3].value);
   let top = rows[0];
   for (const r of rows) if (r.awardPeople > top.awardPeople) top = r;
+  const historyAwards = data.sections.honors.awards;
   return {
     count: String(rows.length),
     signupGroups: String(signupGroups),
@@ -175,12 +177,14 @@ function derive(data) {
     topAwardGroups: String(top.awardGroups),
     topAwardPeople: String(top.awardPeople),
     topAwardRatio: (top.awardPeople * 100 / awardPeople).toFixed(1),
+    awardNationalSum: String(historyAwards.reduce((s, a) => s + a.national, 0)),
+    awardProvinceSum: String(historyAwards.reduce((s, a) => s + a.province, 0)),
   };
 }
 
 function expand(node, derived) {
   if (typeof node === 'string') {
-    return node.replace(/\{(count|signupGroups|signupPeople|awardGroups|awardPeople|rateByGroup|rateByPeople|memberCount|memberRatio|topAwardGroups|topAwardPeople|topAwardRatio)\}/g,
+    return node.replace(/\{(count|signupGroups|signupPeople|awardGroups|awardPeople|rateByGroup|rateByPeople|memberCount|memberRatio|topAwardGroups|topAwardPeople|topAwardRatio|awardNationalSum|awardProvinceSum)\}/g,
       (m, key) => derived[key]);
   }
   if (Array.isArray(node)) return node.map((v) => expand(v, derived));
@@ -367,7 +371,9 @@ export function renderSite(data, template) {
 
   const toks = scan(template);
   const tree = parse(toks, 0, []).nodes;
-  return renderNodes(tree, [d]);
+  // 渲染后再展开一次：数据层在渲染前已展开，但模板里直接写的 {key}
+  // （例如表格合计行）只有在这一步才会被替换，否则会原样穿到页面上。
+  return expand(renderNodes(tree, [d]), derived);
 }
 
 export { derive, expand, addHasFlags, DERIVED_KEYS };

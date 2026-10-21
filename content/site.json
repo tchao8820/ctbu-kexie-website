@@ -28,6 +28,10 @@
         "href": "#results"
       },
       {
+        "text": "荣誉获奖",
+        "href": "#honors"
+      },
+      {
         "text": "成员风采",
         "href": "#member"
       },
@@ -547,6 +551,174 @@
         }
       ]
     },
+    "honors": {
+      "title": "荣誉与获奖",
+      "lead": "集体荣誉取自协会历年荣誉档案与评选公示原件；竞赛成绩为省部级以上赛事的累计统计，均由协会归档文件逐项核对。",
+      "kpis": [
+        {
+          "value": 1122,
+          "display": "1122",
+          "label": "国家级奖项（累计至 2024 学年）"
+        },
+        {
+          "value": 819,
+          "display": "819",
+          "label": "省部级奖项（累计至 2024 学年）"
+        },
+        {
+          "value": 21000,
+          "suffix": "+",
+          "display": "21000+",
+          "label": "科创月累计参与学生（名）"
+        },
+        {
+          "value": 3000,
+          "suffix": "+",
+          "display": "3000+",
+          "label": "科创月累计参与团队（个）"
+        }
+      ],
+      "groupsTitle": "集体荣誉",
+      "groups": [
+        {
+          "year": "2024—2025",
+          "honors": "五星级社团 ·「五四」红旗团支部"
+        },
+        {
+          "year": "2023—2024",
+          "honors": "五星级社团 · 优秀学生社团 · 全国高校「活力社团」· 先进团支部"
+        },
+        {
+          "year": "2022—2023",
+          "honors": "四星级社团 · 优秀学生社团 · 先进团支部"
+        },
+        {
+          "year": "2021—2022",
+          "honors": "优秀社团"
+        },
+        {
+          "year": "2023",
+          "honors": "重庆市高校「一校一社一品」优秀学生社团项目品牌"
+        },
+        {
+          "year": "2022",
+          "honors": "重庆市高校「一校一品」优秀团学工作品牌"
+        },
+        {
+          "year": "2023",
+          "honors": "大学生暑期「三下乡」社会实践先进集体"
+        },
+        {
+          "year": "2011",
+          "honors": "军训先进集体 · 学科竞赛先进集体"
+        }
+      ],
+      "certsTitle": "证书存档",
+      "certsLead": "下列证书均来自协会荣誉档案原件，点击可放大查看。",
+      "certs": [
+        {
+          "img": "assets/img/honors/xingji-2425.jpg",
+          "cap": "2024—2025 学年 五星级社团"
+        },
+        {
+          "img": "assets/img/honors/wusi-2425.jpg",
+          "cap": "2024—2025 学年「五四」红旗团支部"
+        },
+        {
+          "img": "assets/img/honors/xingji-2324.jpg",
+          "cap": "2023—2024 学年 五星级社团"
+        },
+        {
+          "img": "assets/img/honors/huoli-2324.jpg",
+          "cap": "2023—2024 学年 全国高校「活力社团」"
+        },
+        {
+          "img": "assets/img/honors/youxiu-2324.jpg",
+          "cap": "2023—2024 学年 优秀学生社团"
+        },
+        {
+          "img": "assets/img/honors/zhibu-2324.jpg",
+          "cap": "2023—2024 学年 先进团支部"
+        },
+        {
+          "img": "assets/img/honors/xingji-2223.jpg",
+          "cap": "2022—2023 学年 四星级社团"
+        },
+        {
+          "img": "assets/img/honors/youxiu-2223.jpg",
+          "cap": "2022—2023 学年 优秀学生社团"
+        },
+        {
+          "img": "assets/img/honors/zhibu-2223.jpg",
+          "cap": "2022—2023 学年 先进团支部"
+        }
+      ],
+      "awardsTitle": "省部级以上竞赛获奖（2006—2023 学年）",
+      "awardsLead": "历年获奖数量按学年统计，数据取自协会《2006—2023 年省部级以上获奖情况统计》原件。",
+      "awards": [
+        {
+          "year": "2006—2012",
+          "national": 66,
+          "province": 47
+        },
+        {
+          "year": "2013",
+          "national": 21,
+          "province": 6
+        },
+        {
+          "year": "2014",
+          "national": 48,
+          "province": 36
+        },
+        {
+          "year": "2015",
+          "national": 56,
+          "province": 59
+        },
+        {
+          "year": "2016",
+          "national": 92,
+          "province": 20
+        },
+        {
+          "year": "2017",
+          "national": 72,
+          "province": 46
+        },
+        {
+          "year": "2018",
+          "national": 84,
+          "province": 54
+        },
+        {
+          "year": "2019",
+          "national": 31,
+          "province": 22
+        },
+        {
+          "year": "2020",
+          "national": 23,
+          "province": 23
+        },
+        {
+          "year": "2021",
+          "national": 89,
+          "province": 43
+        },
+        {
+          "year": "2022",
+          "national": 106,
+          "province": 92
+        },
+        {
+          "year": "2023",
+          "national": 133,
+          "province": 165
+        }
+      ],
+      "awardsNote": "※ 口径说明：上表为《2006—2023 年省部级以上获奖情况统计》原件数值，区间止于 2023 学年；2024 年《校长荣誉奖申报材料》另按累计口径记录「国家级奖项 1122 项、省部级奖项 819 项」，两者统计区间与口径不同，本页按各自原件呈现，不作合并或换算。"
+    },
     "member": {
       "title": "成员风采",
       "lead": "第二十四届社团会员报名共 {memberCount} 人（按学号去重），来源覆盖 8 个学院、3 个校区——社团以开放姿态欢迎全校各专业同学加入。",
@@ -789,6 +961,10 @@
         {
           "text": "赛事成绩",
           "href": "#results"
+        },
+        {
+          "text": "荣誉获奖",
+          "href": "#honors"
         },
         {
           "text": "成员风采",

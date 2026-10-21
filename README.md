@@ -18,6 +18,7 @@ tools/render.js          ★ 同一套渲染逻辑的 JS 实现（供编辑器�
 tools/check_site.py      ★ 一致性校验（结构/明细/联动/资源/占位符/构建/SEO）
 tools/gen_seo.py         生成 sitemap.xml、robots.txt、robots.host.txt
 tools/gen_og_image.py    生成社交分享卡片 og-image.png（1200×630）
+tools/gen_honor_thumbs.py 把荣誉档案里的证书照片裁成统一缩略图
 tools/set_site_url.py    换域名时一键同步全部域名相关位置
 tools/_migrate.py        一次性引导脚本：把旧 index.html 抽出成 site.json + template.html
 index.html               构建产物：直接发布到 GitHub Pages（勿手工编辑）
@@ -416,6 +417,13 @@ git push gitee main                       # 推送镜像
 ## 内容来源与免责说明
 
 - 文字内容取自协会归档文件：社团章程、协会简介、社团注册登记表、科创月统计表、新闻稿原件。
+- 荣誉与获奖数据取自协会历年荣誉档案：集体荣誉名录来自各学年证书与评选公示原件；
+  逐年竞赛获奖数来自《2006—2023 年省部级以上获奖情况统计》；累计获奖与参与规模
+  来自 2024 年《校长荣誉奖申报材料》。**两组数字统计区间与口径不同，页面上按各自
+  原件分别呈现并加脚注说明，不作合并或换算**——改动前请先核对原件。
+- 证书缩略图由 `python tools/gen_honor_thumbs.py --src "<荣誉档案目录>"` 生成，
+  素材本体不在仓库内。该脚本会先做 EXIF 方向矫正再裁切：档案里不少手机拍摄的证书
+  是横向存储靠 EXIF 标记竖排的，不矫正会出现整张证书侧倒。
 - 会员数据仅以聚合形式呈现（总数、学院分布），**不含任何学号或个人信息**。
 - 页内「入会登记」表单为纯前端生成文本，不向服务器发送数据。
 - 公告栏为静态文案，更新需改 `content/site.json` 并重新发布。

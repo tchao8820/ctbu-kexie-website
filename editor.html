@@ -454,6 +454,37 @@ var SCHEMA = [
     ]
   },
   {
+    id: 'honors', title: '荣誉与获奖', nav: '数据', nodes: [
+      { k: 'sections.honors.title', l: '标题' },
+      { k: 'sections.honors.lead', l: '导语', kind: 'ta' },
+      { k: 'sections.honors.kpis', l: '数字块', type: 'list', fields: [
+        { k: 'value', l: '数值（滚动动画用）', kind: 'sm', num: true },
+        { k: 'suffix', l: '后缀（如 +）', kind: 'sm' },
+        { k: 'display', l: '显示值' },
+        { k: 'label', l: '说明' },
+      ]},
+      { k: 'sections.honors.groupsTitle', l: '集体荣誉小标题' },
+      { k: 'sections.honors.groups', l: '集体荣誉', type: 'list', fields: [
+        { k: 'year', l: '学年 / 年份', kind: 'sm' },
+        { k: 'honors', l: '所获荣誉', kind: 'ta' },
+      ]},
+      { k: 'sections.honors.awardsTitle', l: '获奖统计小标题' },
+      { k: 'sections.honors.awardsLead', l: '获奖统计导语', kind: 'ta' },
+      { k: 'sections.honors.awards', l: '逐年获奖数（合计自动汇总）', type: 'list', fields: [
+        { k: 'year', l: '学年', kind: 'sm' },
+        { k: 'national', l: '国家级', kind: 'sm', num: true },
+        { k: 'province', l: '省部级', kind: 'sm', num: true },
+      ]},
+      { k: 'sections.honors.awardsNote', l: '口径脚注', kind: 'ta' },
+      { k: 'sections.honors.certsTitle', l: '证书墙小标题' },
+      { k: 'sections.honors.certsLead', l: '证书墙导语', kind: 'ta' },
+      { k: 'sections.honors.certs', l: '证书条目（图片需先放进 assets/img/）', type: 'list', fields: [
+        { k: 'img', l: '图片路径', kind: 'sm' },
+        { k: 'cap', l: '证书说明' },
+      ]},
+    ]
+  },
+  {
     id: 'member', title: '成员风采', nav: '数据', nodes: [
       { k: 'sections.member.title', l: '标题' },
       { k: 'sections.member.lead', l: '导语', kind: 'ta' },
