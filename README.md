@@ -17,6 +17,7 @@ tools/build.py           ★ 构建脚本（Python，权威实现）
 tools/render.js          ★ 同一套渲染逻辑的 JS 实现（供编辑器浏览器端预览）
 tools/check_site.py      ★ 一致性校验（结构/明细/联动/资源/占位符/构建/SEO）
 tools/gen_seo.py         生成 sitemap.xml、robots.txt、robots.host.txt
+tools/gen_og_image.py    生成社交分享卡片 og-image.png（1200×630）
 tools/set_site_url.py    换域名时一键同步全部域名相关位置
 tools/_migrate.py        一次性引导脚本：把旧 index.html 抽出成 site.json + template.html
 index.html               构建产物：直接发布到 GitHub Pages（勿手工编辑）
@@ -47,6 +48,24 @@ tools/template.html ┘
 - `index.html` 是**提交进仓库的构建产物**，保证「没有构建环境也能直接部署」。
 - `tools/render.js` 是 `build.py` 的等价 JS 实现，两个产物**逐字节一致**（CI 会核对），
   这样浏览器里的编辑器也能在本地实时预览最终 HTML，无需后端。
+
+---
+
+## 视觉规范
+
+设计方向是**学术年报**：纸（象牙白 `#FBF9F4`）＋ 墨（深墨蓝 `#14243A`）＋ 一点低饱和深青
+（`#0E6E6E`）。刻意不用渐变、阴影与圆角——层次全部由字阶、留白和 1px 细规则线建立。
+
+| 项 | 约定 |
+|---|---|
+| 字体 | 衬线（思源宋体 / 宋体）用于标题；系统无衬线用于正文；等宽用于数字与英文标签 |
+| 章节头 | 统一「编号 01–09 ＋ 英文标签 ＋ 衬线标题」三件套，形成年报式阅读节奏 |
+| 数据 | 一律等宽字体、右对齐、`tabular-nums`；合计与比率由构建脚本算出，不手填 |
+| 分隔 | 1px `--rule` 细线分组，2px `--ink` 粗线标记报表区（统计条、联系表） |
+| 强调 | 深青只用于：章节编号下的英文标签、链接、时间轴节点、图表条形 |
+
+改配色只需动两处：`tools/template.html` 的 `:root` 令牌，以及
+`tools/gen_og_image.py` 顶部的色值常量——分享卡片是 Pillow 画的，读不到 CSS，必须手工同步。
 
 ---
 
@@ -247,7 +266,7 @@ python -m http.server 8000
 | `robots.txt` | 仓库内版本（子路径用） | 同上 |
 | `robots.host.txt` | 主机根版本（**爬虫真正读的那份**） | 同上 |
 | `404.html` | 自定义错误页，避免默认 404 页被收录 | 手工维护 |
-| `og-image.png` | 分享预览图 1200×630 | 手工制作，当前仓库未收录其生成脚本 |
+| `og-image.png` | 分享预览图 1200×630 | `python tools/gen_og_image.py`（改配色请同步脚本内的色值常量） |
 
 生成器是**目录驱动**的：它遍历发布根目录里真实存在的 `.html` 文件，
 所以以后新增页面（如 `news/2026-10.html`）只要放进根目录，重跑脚本就会自动收录，
