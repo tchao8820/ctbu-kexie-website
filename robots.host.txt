@@ -4,7 +4,7 @@
 # 适用搜索引擎：Googlebot（谷歌）、Baiduspider（百度）、Bingbot（必应）、Sogou web spider（搜狗）、360Spider（360 搜索）、YandexBot（俄罗斯）、DuckDuckBot、Applebot
 
 User-agent: *
-Allow: /ctbu-kexie-website
+Allow: /ctbu-kexie-website/
 
 # 屏蔽无实际内容的路径
 Disallow: /ctbu-kexie-website/404.html
