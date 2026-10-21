@@ -4,8 +4,19 @@
 CTBU-STA 官网 · SEO 文件生成器
 ================================
 自动扫描站点发布根目录，生成：
-  1) sitemap.xml  —— 收录全部公开页面（loc / lastmod / changefreq / priority）
-  2) robots.txt   —— 允许主流搜索引擎抓取，声明 sitemap，屏蔽无内容路径
+  1) sitemap.xml     —— 收录全部公开页面（loc / lastmod / changefreq / priority）
+  2) robots.txt      —— 站点根目录的 robots（允许主流搜索引擎抓取，声明 sitemap）
+  3) robots.host.txt —— 主机根目录的 robots（把上一步的路径加上站点子路径前缀）
+
+为什么要两份 robots
+------------------
+搜索引擎只认「主机根目录」的 robots.txt。本站部署在
+https://tchao8820.github.io/ctbu-kexie-website/ 这种子路径下，
+仓库里的 robots.txt 实际被访问到的是
+https://tchao8820.github.io/ctbu-kexie-website/robots.txt —— 搜索引擎不读它。
+真正生效的那份要放在 https://tchao8820.github.io/robots.txt，
+里面每条路径都得带上 /ctbu-kexie-website/ 前缀。
+本脚本一次生成两份，前缀自动推算，不用手工维护两套规则。
 
 设计要点
 --------
@@ -38,7 +49,7 @@ DEFAULT_SITE = "https://tchao8820.github.io/ctbu-kexie-website"
 SKIP_DIRS = {
     ".git", ".github", ".workbuddy",
     "node_modules", "dist", "build", "out", "_site", ".cache",
-    "assets", "tools", "src", "scripts",
+    "assets", "tools", "src", "scripts", "content",
 }
 
 # 明确排除的文件（无实际内容，或已由 robots.txt 屏蔽）
@@ -81,6 +92,15 @@ def norm_base(url: str) -> str:
     if not u.startswith(("http://", "https://")):
         u = "https://" + u
     return u.rstrip("/")
+
+
+def site_path(base: str) -> str:
+    """取出站点根地址里的路径部分（子路径部署时形如 /ctbu-kexie-website）。"""
+    rest = base.split("://", 1)[-1]
+    if "/" not in rest:
+        return ""
+    p = rest.split("/", 1)[1].strip("/")
+    return "/" + p if p else ""
 
 
 def git_lastmod(root: str, rel: str) -> str | None:
@@ -190,18 +210,57 @@ def build_robots(base: str, sitemap_url: str) -> str:
     return "\n".join(lines)
 
 
+def build_host_robots(base: str, sitemap_url: str) -> str:
+    """主机根目录用的 robots：站点根地址的路径部分变成每条规则的前缀。
+
+    站点部署在 https://host/ctbu-kexie-website/ 时，仓库里的 robots.txt
+    实际位于 https://host/ctbu-kexie-website/robots.txt，搜索引擎不读；
+    真正生效的是 https://host/robots.txt，那份的路径必须带子路径前缀。
+    """
+    prefix = site_path(base)
+    lines = [
+        "# CTBU-STA 官网 robots.txt · 主机根目录版 · 由 tools/gen_seo.py 自动生成",
+        "# 部署于子路径 " + (prefix or "/") + " 下，搜索引擎只认主机根目录的 robots.txt。",
+        "# 请把本文件放到主机根目录（GitHub 用户站仓库根目录 / 自定义域名根目录）。",
+        "# 适用搜索引擎：" + "、".join(MAJOR_CRAWLERS),
+        "",
+        "User-agent: *",
+        f"Allow: {prefix + '/' if prefix else '/'}",
+        "",
+        "# 屏蔽无实际内容的路径",
+    ]
+    lines += [f"Disallow: {prefix}{d}" for d in DISALLOW]
+    lines += [
+        "",
+        "# 站点地图",
+        f"Sitemap: {sitemap_url}",
+        "",
+    ]
+    return "\n".join(lines)
+
+
 def main():
+    # Windows 控制台默认 GBK，输出 ✓ 等字符会抛 UnicodeEncodeError
+    for stream in (sys.stdout, sys.stderr):
+        try:
+            stream.reconfigure(encoding="utf-8", errors="replace")
+        except (AttributeError, ValueError):
+            pass
+
     ap = argparse.ArgumentParser(description="生成 sitemap.xml 与 robots.txt")
     ap.add_argument("--root", default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
                     help="站点发布根目录（默认：本脚本所在目录的上一级）")
     ap.add_argument("--site-url", default=os.environ.get("SITE_URL", DEFAULT_SITE),
                     help="站点根地址，如 https://tchao8820.github.io/ctbu-kexie-website")
     ap.add_argument("--dry-run", action="store_true", help="只打印预览，不写文件")
+    ap.add_argument("--host-robots", default=None,
+                    help="主机根目录 robots.txt 的写出路径（默认 <root>/robots.host.txt）")
     args = ap.parse_args()
 
     root = os.path.abspath(args.root)
     base = norm_base(args.site_url)
     sitemap_url = base + "/sitemap.xml"
+    host_robots_path = os.path.abspath(args.host_robots) if args.host_robots else os.path.join(root, "robots.host.txt")
 
     if not os.path.isdir(root):
         print(f"[错误] 发布根目录不存在：{root}", file=sys.stderr)
@@ -214,6 +273,7 @@ def main():
 
     sm = build_sitemap(base, pages)
     rb = build_robots(base, sitemap_url)
+    hrb = build_host_robots(base, sitemap_url)
 
     print(f"站点根地址 : {base}")
     print(f"发布根目录 : {root}")
@@ -231,17 +291,20 @@ def main():
         print(sm)
         print("----- robots.txt -----")
         print(rb)
+        print("----- robots.host.txt -----")
+        print(hrb)
         return 0
 
     p_sm = os.path.join(root, "sitemap.xml")
     p_rb = os.path.join(root, "robots.txt")
-    with open(p_sm, "w", encoding="utf-8", newline="\n") as f:
-        f.write(sm)
-    with open(p_rb, "w", encoding="utf-8", newline="\n") as f:
-        f.write(rb)
+    for path, text in ((p_sm, sm), (p_rb, rb), (host_robots_path, hrb)):
+        with open(path, "w", encoding="utf-8", newline="\n") as f:
+            f.write(text)
+        print(f"已写出：{path}（{os.path.getsize(path)} 字节）")
 
-    print(f"\n已写出：{p_sm}（{os.path.getsize(p_sm)} 字节）")
-    print(f"已写出：{p_rb}（{os.path.getsize(p_rb)} 字节）")
+    if site_path(base):
+        print(f"\n提示：站点位于子路径 {site_path(base)}，仓库内的 robots.txt 搜索引擎不读；")
+        print(f"      请把 {host_robots_path} 放到主机根目录。")
     return 0
 
 

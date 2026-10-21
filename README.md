@@ -2,133 +2,178 @@
 
 > 科技点燃梦想，创新赋能未来
 
-本仓库是重庆工商大学科技协会官网的发布源码，用于 **GitHub Pages** 静态托管。
+本仓库是重庆工商大学科技协会官网的**源码与发布产物**，用于 **GitHub Pages** 静态托管。
 
 线上地址：<https://tchao8820.github.io/ctbu-kexie-website/>
 
-## 仓库内容
+---
+
+## 仓库结构
 
 ```
-index.html        官网全部内容（单文件，含内联样式与脚本；图片为外链）
-404.html          自定义 404 错误页（GitHub Pages 自动启用，已被 robots 屏蔽）
-sitemap.xml       站点地图（自动生成，勿手工编辑）
-robots.txt        爬虫规则 + sitemap 声明（自动生成，勿手工编辑）
-og-image.png      社交分享卡片 1200×630（微信 / QQ / Twitter 预览用）
-assets/img/       站点图片资源（11 个文件，由 index.html 引用）
-CNAME.example     CNAME 文件模板，绑定自定义域名时参考（当前未启用）
-.nojekyll         阻止 GitHub Pages 走 Jekyll 构建，保证原样发布
-tools/gen_seo.py        扫描发布目录，自动生成 sitemap.xml 与 robots.txt
-tools/set_site_url.py   换域名时一键同步全部域名相关位置
-README.md         本说明
+content/site.json        ★ 内容数据层：全站唯一的内容来源（JSON）
+tools/template.html      ★ 页面模板：含迷你 mustache 占位符
+tools/build.py           ★ 构建脚本（Python，权威实现）
+tools/render.js          ★ 同一套渲染逻辑的 JS 实现（供编辑器浏览器端预览）
+tools/check_site.py      ★ 一致性校验（结构/明细/联动/资源/占位符/构建/SEO）
+tools/gen_seo.py         生成 sitemap.xml、robots.txt、robots.host.txt
+tools/set_site_url.py    换域名时一键同步全部域名相关位置
+tools/_migrate.py        一次性引导脚本：把旧 index.html 抽出成 site.json + template.html
+index.html               构建产物：直接发布到 GitHub Pages（勿手工编辑）
+editor.html              在线内容编辑器（编辑 site.json，不是改 HTML）
+404.html                 自定义 404 错误页
+sitemap.xml              站点地图（自动生成，勿手工编辑）
+robots.txt               爬虫规则（仓库内版本，自动生成）
+robots.host.txt          爬虫规则（主机根版本，自动生成，需另行部署）
+og-image.png             社交分享卡片 1200×630
+assets/img/              站点图片资源（11 个文件）
+CNAME.example            CNAME 模板，绑定自定义域名时参考
+.nojekyll                阻止 GitHub Pages 走 Jekyll 构建
+.github/workflows/ci.yml CI：校验 + 自动重建 + 产物核对
+LICENSE                  源代码许可（MIT）
+LICENSE-CONTENT.md       内容与图片许可（CC BY-NC-SA 4.0）
 ```
 
-官网是**静态单页站点**：零接口调用、零构建步骤、无需任何环境变量，
-因此发布方式就是「把文件放好」，没有构建过程。
+### 构建链
 
-### 为什么图片是外链而不是内嵌
+```
+content/site.json  ─┐
+                    ├─→ tools/build.py  ─→ index.html  ─→ GitHub Pages
+tools/template.html ┘
+```
 
-早期版本把全部图片以 base64 写进 `index.html`，且为实现点击放大灯箱，
-每张图在 `data-img` 与 `src` 两处各存一份完整数据。结果：
+- **零运行时依赖**：构建只需 Python 3（标准库），不需要 Node、npm 包或任何环境变量。
+- **零接口调用**：网站本身是纯静态单页，发布即上线，不需要后端。
+- `index.html` 是**提交进仓库的构建产物**，保证「没有构建环境也能直接部署」。
+- `tools/render.js` 是 `build.py` 的等价 JS 实现，两个产物**逐字节一致**（CI 会核对），
+  这样浏览器里的编辑器也能在本地实时预览最终 HTML，无需后端。
 
-| 问题 | 数值 |
-|---|---|
-| 单页体积 | 2.30 MB（gzip 后 1.70 MB，base64 几乎不可压缩） |
-| 重复内嵌 | 10 组图片字节完全相同，冗余 987 KB（占43.8%） |
-| `loading="lazy"` | **完全失效**——浏览器须下载整个文件才能解析 |
-| `fetchpriority="high"` | hero 图排在第 659 行，反成最后到达的资源，实测首字节 13.5 s |
-
-现已改为 `assets/img/` 下的独立文件 + 相对路径：
-
-| 指标 | 改前 | 改后 |
-|---|---|---|
-| `index.html` | 2,304,700 B | 约 93 KB |
-| 首屏传输 | 1.70 MB（gzip） | 约 93 KB + 首图 140 KB，且可并行 |
-| `loading="lazy"` | 无效 | 真正生效，滚动到才加载 |
-| 二次访问 | 重下 1.7 MB | 图片走独立缓存 |
-
-代价是「零外部请求」变为「有限外部请求」，这个取舍值得。
-另：favicon（64×64，8 KB）仍保持内联——图标极小，内联可省一次请求。
-
-> 图片重命名后请同步更新 `index.html` 中 `src` 与 `data-img` 两处引用，
-> 两者必须指向同一文件（灯箱直接读取 `data-img` 作为 `<img>` 的 src）。
+---
 
 ## 如何更新内容
 
-> ⚠️ **本仓库只存发布产物，不含完整构建链。**
-> 下面步骤 1–2 依赖本机 `F:\科技协会官网\` 目录下的模板与 `build_site.py`
-> （未入库，因为含本机绝对路径）。换机器维护需先取得该目录。
+### 方式一：改 JSON + 构建（推荐）
 
-1. 修改源模板 `F:\科技协会官网\template.html`
-2. 在 `F:\科技协会官网\` 下重建：`python F:\.workbuddy\scan\build_site.py`
-3. 把新的 `index.html` 覆盖到本仓库根目录
-4. 若图片有增删改名，同步更新 `assets/img/`
-5. 重新生成 SEO 文件：`python tools/gen_seo.py`
-6. 提交并推送，GitHub Pages 会在 1–2 分钟内自动更新
+```bash
+# 1. 编辑 content/site.json
+# 2. 构建
+python tools/build.py
 
-> 站点上线后 `lastmod` 想刷新，只需重跑 `tools/gen_seo.py`。
-> 改动图片后请自查：`grep -o 'assets/img/[^"]*' index.html | sort -u`
-> 列出的每个文件都必须真实存在，否则会出现破图。
+# 3. 一致性自检（可选，CI 也会跑）
+python tools/check_site.py
 
-## 搜索引擎优化
+# 4. 提交
+git add -A && git commit -m "content: 更新赛事成绩" && git push
+```
 
-| 文件 | 作用 | 生成方式 |
+改完 `content/site.json` 后**必须**重跑 `python tools/build.py`，否则 `index.html`
+还是旧内容，CI 会因此报错。
+
+### 方式二：用在线编辑器（不用装工具）
+
+见下方「在线编辑」一节。编辑器改的也是 `content/site.json`，上传后 CI 会自动重建
+`index.html`，无需手工跑构建脚本。
+
+### 方式三：改结构或样式
+
+样式、布局、脚本改动属于**代码改动**，应直接改 `tools/template.html`，
+然后重跑 `python tools/build.py`。不要直接编辑 `index.html`——下次构建会被覆盖。
+
+### 数据联动：合计与获奖率不需要手填
+
+`sections.results.rows` 里每一项赛事只填 4 个数字：
+
+| 字段 | 含义 |
+|---|---|
+| `signupGroups` | 报名组数 |
+| `signupPeople` | 报名人次 |
+| `awardGroups` | 获奖组数 |
+| `awardPeople` | 获奖人次 |
+
+下面这些**全部由构建脚本自动计算**，在 `site.json` 里用 `{占位符}` 引用即可：
+
+| 占位符 | 含义 | 来源 |
 |---|---|---|
-| `sitemap.xml` | 向搜索引擎提交全部公开页面 | `python tools/gen_seo.py` |
-| `robots.txt` | 允许全站抓取 + 声明 sitemap + 屏蔽无内容路径 | 同上 |
-| `404.html` | 自定义错误页，避免默认 404 页被收录 | 手工维护 |
-| `og-image.png` | 分享预览图1200×630 | 手工制作，当前仓库未收录其生成脚本 |
+| `{count}` | 赛事项数 | `rows` 条数 |
+| `{signupGroups}` / `{signupPeople}` | 报名合计（组 / 人次） | `rows` 求和 |
+| `{awardGroups}` / `{awardPeople}` | 获奖合计（组 / 人次） | `rows` 求和 |
+| `{rateByGroup}` / `{rateByPeople}` | 获奖率（按组 / 按人次，%） | 获奖 ÷ 报名 |
+| `{memberCount}` | 会员总数 | `sections.member.kpis[0].value` |
+| `{memberRatio}` | 机械学院占比（%） | `kpis[3] ÷ kpis[0]` |
+| `{topAwardGroups}` / `{topAwardPeople}` / `{topAwardRatio}` | 获奖人次最多赛事的组数 / 人次 / 占比 | `rows` 中获奖人次最大者 |
 
-生成器是**目录驱动**的：它遍历发布根目录里真实存在的 `.html` 文件，
-所以以后新增页面（如 `news/2026-10.html`）只要放进根目录，重跑脚本就会自动收录，
-不需要手工维护页面清单。
+> ⚠️ **不要在文案里手写「共 20 项」「2953 人次」这类数字。**
+> 手写会导致改动明细后总数对不上，`check_site.py` 会直接报 ERROR。
 
-收录规则：
-- 只收录真实存在的 HTML 页面
-- 排除 `404.html`、`template.html` 与 `tools/`、`dist/`、`assets/` 等非内容目录
-- 站内 `#about` 这类锚点是**页内导航**，不构成独立可索引 URL，因此不进 sitemap
-  （这也是 Google 的明确要求：sitemap 中的 URL 不得含 fragment）
+---
 
-### robots.txt 与主机根（已解决）
+## 模板语法（迷你 mustache）
 
-爬虫**只读主机根目录的 robots.txt**。Google 官方文档明确：
-`https://example.com/robots.txt` 有效，而 `https://example.com/folder/robots.txt`
-→「不是有效的 robots.txt 文件，抓取工具不会检查子目录中的 robots.txt」。
+`tools/template.html` 支持以下语法：
 
-本站位于 `https://tchao8820.github.io/ctbu-kexie-website/`，位于**子路径**，
-因此本仓库内 `tools/gen_seo.py` 生成的 robots.txt 虽然能被下载，但爬虫不会读取。
+| 语法 | 作用 |
+|---|---|
+| `{{path.to.value}}` | 取值并 HTML 转义（`& < > "`） |
+| `{{$path}}` | 取值且**不转义**，用于构建期生成的原始 HTML 片段 |
+| `{{#path}}…{{/path}}` | 区块：列表→逐项迭代，字典→压栈，字符串/布尔→条件成立时输出 |
+| `{{^path}}…{{/path}}` | 反向区块：值为空时输出 |
+| `{key}` | 派生值占位符，见上表 |
 
-**✅ 已解决**：已建立用户站仓库 [`tchao8820.github.io`](https://github.com/tchao8820/tchao8820.github.io)，
-其根目录的 `robots.txt` 即主机根文件，现返回 **HTTP 200**（此前为 404），
-对 `tchao8820` 名下所有 Pages 项目页生效。
+- 已有的 HTML 实体（`&ensp;` `&amp;` 等）在转义时会被**原样保留**，不会被二次转义成
+  `&amp;ensp;`。
+- 每个含列表的键会自动获得一个布尔量 `has<Key>`（如 `hasItems`、`hasKpis`），
+  模板里可直接用 `{{#hasItems}}…{{/hasItems}}` 判断列表是否为空。
+- 路径解析遵循 mustache 规则：先按完整路径在上下文栈里找，再退到最长公共前缀。
 
-| 项 | 状态 | 说明 |
+---
+
+## 一致性校验与 CI
+
+```bash
+python tools/check_site.py            # 全量校验
+python tools/check_site.py --verbose  # 打印每一项检查结果
+```
+
+校验内容分 8 组：
+
+| 组 | 检查什么 | 级别 |
 |---|---|---|
-| `Allow: /`（允许抓取） | ✅ 生效 | 主机根 robots.txt 已存在 |
-| `Disallow:` 各条 | ✅ 生效 | 已按主机根视角补 `/ctbu-kexie-website/` 前缀 |
-| `Sitemap:` 声明 | ✅ 可自动发现 | 爬虫现在能读到该行 |
+| A 结构 | 36 个必需字段是否存在、类型是否正确 | ERROR |
+| B 明细 | 数字非负整数；获奖组数 > 报名组数 | ERROR / WARN |
+| C 联动 | 11 处汇总文案**必须**使用 `{占位符}`，不能写死数字 | ERROR |
+| D 资源 | `assets/img/` 下每张被引用的图片真实存在 | ERROR |
+| E 占位符 | 所有 `{key}` 都是已知派生键 | ERROR |
+| F 构建 | `python tools/build.py --check`（产物与数据一致） | ERROR |
+| G 渲染 | `node tools/render.js --check`（JS 产物与 Python 一致） | ERROR |
+| H SEO | `sitemap.xml` / `robots.txt` / `robots.host.txt` 与当前域名一致 | ERROR |
 
-> 该文件为**手工维护**，非脚本生成。新增 Pages 项目时需同步更新其中的
-> `Sitemap:` 行与屏蔽规则。注意**不要**屏蔽 `/assets/`——那是真实图片目录，
-> 屏蔽后 `og:image` 与正文配图将无法被抓取。
+退出码：`0` 通过（有 WARN 也算通过），`1` 有 ERROR。
 
-> 绑定自定义域名后，这份主机根 robots.txt 将不再适用于新域名，届时需把等价规则
-> 同步到域名根目录（或用 `tools/set_site_url.py` 统一处理）。
+### GitHub Actions
 
-> 手动提交 sitemap（免费，各平台一次即可）：
-> Google Search Console / Bing Webmaster Tools / 百度搜索资源平台，添加站点后提交
-> `https://tchao8820.github.io/ctbu-kexie-website/sitemap.xml`
+`.github/workflows/ci.yml` 在 push / PR 到 `main` 时自动运行三个作业：
 
+| 作业 | 触发 | 做什么 |
+|---|---|---|
+| `data-check` | 总是 | 跑 `check_site.py`（跳过构建与 SEO 项），任一 ERROR 即失败 |
+| `rebuild` | 仅 push 到 `main` | 重新生成 `index.html` / `sitemap.xml` / `robots.txt`，有差异就自动提交 |
+| `verify` | 仅 PR | 跑完整 `check_site.py`（含构建、渲染、SEO 全项） |
 
+`rebuild` 作业会把重建后的产物以 `github-actions[bot]` 的身份提交回 `main`，
+因此**只改 `content/site.json` 并 push，内容会自动上线**，不需要本地装 Python。
 
-## 在线编辑（临时功能）
+> 若仓库设置了分支保护（禁止 bot 推送），需要允许 Actions 写入 `contents` 权限，
+> 或改为本地跑 `python tools/build.py` 后一并提交。
 
-仓库内新增 `editor.html`，用于**不用写代码、不用装工具**地在线修改网站内容。
+---
+
+## 在线编辑
+
+仓库内 `editor.html` 用于**不用写代码、不用装工具**地在线修改网站内容。
 
 ### 打开方式
 
-**方式一（推荐，需能开HTTP 服务）**
-
-在仓库根目录执行：
+**方式一（推荐，需能开 HTTP 服务）**
 
 ```bash
 python -m http.server 8000
@@ -138,34 +183,50 @@ python -m http.server 8000
 
 **方式二（已部署，直接访问）**
 
-GitHub Pages 已上线，访问：
-
 <https://tchao8820.github.io/ctbu-kexie-website/editor.html>
 
 > ⚠️ **不能直接双击 `editor.html` 打开**（`file://` 协议下浏览器禁止读取同目录文件）。
 
 ### 能改什么
 
-| 区块 | 内容 |
+编辑器直接编辑 `content/site.json`，覆盖 13 个分组：
+
+| 分组 | 内容 |
 |---|---|
-| 页面信息 | 9 个区块的标题与导语文字 |
-| 协会历程 | 9 条时间线，可增删；年份/标题/描述/徽章 |
-| 组织架构 | 4 个部门（可增删）、负责人、指导教师 |
-| 新闻动态 | 5 条新闻（可增删）；日期/分类/标题/正文 |
-| 科创月成绩 | 20 项赛事（可增删）；**只填 5 个数字，合计与获奖率自动重算** |
+| 站点地址与 SEO | 站点 URL、OG 图、logo、标题/描述/关键词 |
+| 导航栏 | 品牌名、CTA、导航链接（可增删） |
+| 首页横幅 | 标语、副标语、英文全称、成立说明、3 个数字块 |
+| 协会简介 | 标题、导语、正文段落 |
+| 协会历程 | 9 条时间线（可增删）；年份/标题/描述/徽章 |
+| 组织架构 | 4 个部门（可增删）、负责人、指导教师、专项小组 |
+| 科创月赛事成绩 | 20 项赛事（可增删）；**只填 4 个数字，合计与获奖率自动重算** |
+| 成员风采 | 4 个 KPI、学院分布 |
+| 新闻动态与公告 | 5 条新闻（可增删）；日期/分类/标题/正文 |
+| 活动与项目 | 6 个活动（可增删） |
+| 加入协会 | 步骤、福利 |
 | 联系方式 | 4 项（可增删）；标签/内容/说明/链接 |
-| 首屏横幅 | 标语、副标语、英文全称、成立说明 |
+| 页脚 | 版权行、来源说明、页脚导航 |
+
+### 实时统计面板
+
+编辑器右侧顶部有一块**实时统计**，随输入即时重算：
+赛事项数、报名组数、报名人次、获奖组数、获奖人次、获奖率（按组 / 按人次）、
+会员人数、机械学院占比。
+
+若某项赛事出现「获奖 > 报名」，面板会给出橙色警告提示——通常是原件统计口径问题，
+需要在文案里补口径说明，而不是直接改数。
 
 ### 用法
 
-1. 左侧点区块跳转，直接在右侧改文字
+1. 左侧点分组跳转，直接在右侧改文字
 2. 带 **＋** 的按钮可新增条目，条目右上角 **✕** 可删除
-3. 改完点右上 **预览效果** 看效果
-4. 点 **生成新版 HTML**，按弹窗提示三步上传：
-   - 下载 `index.html`（文件名保持不变）
-   - 打开 <https://github.com/tchao8820/ctbu-kexie-website/edit/main/index.html>
-   - 全选粘贴覆盖原内容 →填一句提交说明 → **Commit changes**
-   - 等 1–2 分钟自动上线
+3. 改完点右上 **预览效果**，用真实渲染结果检查排版
+4. 点 **生成新版**，弹窗提供两个下载：
+
+   | 按钮 | 文件 | 上传到 | 之后 |
+   |---|---|---|---|
+   | **下载 site.json**（主） | `content/site.json` | <https://github.com/tchao8820/ctbu-kexie-website/edit/main/content/site.json> | CI 自动重建 `index.html` 并上线 |
+   | 下载构建好的 index.html（次） | `index.html` | <https://github.com/tchao8820/ctbu-kexie-website/edit/main/index.html> | 直接上线（绕过 CI 重建） |
 
 快捷键：`Ctrl+S` 生成导出，`Esc` 关闭弹窗。
 
@@ -174,10 +235,66 @@ GitHub Pages 已上线，访问：
 - 这是**静态页面，没有服务器数据库**。改动不会自动保存，也不会自动上线，
   **必须在生成后完成上传**。刷新页面会丢失未导出的改动。
 - 编辑器**不修改图片**。换图需手动替换 `assets/img/` 下的文件。
-- 只改内容，**不要用它改样式或结构** —— 那是代码改动，应走 git 提交。
+- 只改内容，**不要用它改样式或结构** —— 那是代码改动，应改 `tools/template.html` 并走 git 提交。
 
-> 本工具定位为「临时」：内容更新稳定后可删除 `editor.html`，
-> 恢复为直接改 `index.html` + push 的流程。
+---
+
+## 搜索引擎优化
+
+| 文件 | 作用 | 生成方式 |
+|---|---|---|
+| `sitemap.xml` | 向搜索引擎提交全部公开页面 | `python tools/gen_seo.py` |
+| `robots.txt` | 仓库内版本（子路径用） | 同上 |
+| `robots.host.txt` | 主机根版本（**爬虫真正读的那份**） | 同上 |
+| `404.html` | 自定义错误页，避免默认 404 页被收录 | 手工维护 |
+| `og-image.png` | 分享预览图 1200×630 | 手工制作，当前仓库未收录其生成脚本 |
+
+生成器是**目录驱动**的：它遍历发布根目录里真实存在的 `.html` 文件，
+所以以后新增页面（如 `news/2026-10.html`）只要放进根目录，重跑脚本就会自动收录，
+不需要手工维护页面清单。
+
+收录规则：
+- 只收录真实存在的 HTML 页面
+- 排除 `404.html`、`editor.html`、`tools/`、`content/`、`dist/`、`assets/` 等非内容目录
+- 站内 `#about` 这类锚点是**页内导航**，不构成独立可索引 URL，因此不进 sitemap
+  （这也是 Google 的明确要求：sitemap 中的 URL 不得含 fragment）
+
+### robots.txt 与主机根（重要）
+
+爬虫**只读主机根目录的 robots.txt**。Google 官方文档明确：
+`https://example.com/robots.txt` 有效，而 `https://example.com/folder/robots.txt`
+→「不是有效的 robots.txt 文件，抓取工具不会检查子目录中的 robots.txt」。
+
+本站位于 `https://tchao8820.github.io/ctbu-kexie-website/`，位于**子路径**，
+因此本仓库内的 `robots.txt` 虽可下载，但爬虫不会读取。
+
+`tools/gen_seo.py` 现在会**同时生成两份**：
+
+| 文件 | 用途 | 部署位置 |
+|---|---|---|
+| `robots.txt` | 仓库内版本（路径不带前缀） | 本仓库根目录 |
+| `robots.host.txt` | 主机根版本（路径带 `/ctbu-kexie-website` 前缀） | **用户站仓库根目录** / 自定义域名根目录 |
+
+主机根文件应放到 [`tchao8820.github.io`](https://github.com/tchao8820/tchao8820.github.io)
+仓库的根目录，对 `tchao8820` 名下所有 Pages 项目页生效。
+
+| 项 | 状态 | 说明 |
+|---|---|---|
+| `Allow: /`（允许抓取） | ✅ 生效 | 主机根 robots.txt 已存在 |
+| `Disallow:` 各条 | ✅ 生效 | 已按主机根视角自动补 `/ctbu-kexie-website` 前缀 |
+| `Sitemap:` 声明 | ✅ 可自动发现 | 爬虫现在能读到该行 |
+
+> 绑定自定义域名后，主机根 robots.txt 需要重新部署到域名根目录；
+> `python tools/set_site_url.py` 会一并重算 `robots.host.txt` 的前缀。
+
+> ⚠️ **不要**屏蔽 `/assets/`——那是真实图片目录，屏蔽后 `og:image` 与正文配图
+> 将无法被抓取，影响图片搜索收录。
+
+> 手动提交 sitemap（免费，各平台一次即可）：
+> Google Search Console / Bing Webmaster Tools / 百度搜索资源平台，添加站点后提交
+> `https://tchao8820.github.io/ctbu-kexie-website/sitemap.xml`
+
+---
 
 ## 自定义域名
 
@@ -200,12 +317,14 @@ git add -A && git commit -m "chore: 切换到自定义域名" && git push
 > `tchao8820.github.io/ctbu-kexie-website/` 做 301 跳转到该域名；
 > 若域名 DNS 还没配好，原地址会直接打不开。要回退就去掉 `--remove-cname` 重跑。
 
-`set_site_url.py` 会自动改这些位置（共 10 处）：
+`set_site_url.py` 改的是**数据源**（`content/site.json` 里的 `site.url`），
+然后自动重跑构建与 SEO 生成，因此以下位置会一并更新：
 
+- `content/site.json`：`site.url`（`og:image` / `logo` / `canonical` 都由它派生）
 - `index.html`：`<link rel="canonical">`、`og:url`、`og:image`、`twitter:image`、
   JSON-LD 结构化数据里的 `@id` / `url` / `logo`
 - `sitemap.xml`：全部 `<loc>`
-- `robots.txt`：`Sitemap:` 行
+- `robots.txt` / `robots.host.txt`：`Sitemap:` 行与路径前缀
 - `CNAME`：按需生成
 
 ### 免费域名从哪来
@@ -225,6 +344,8 @@ git add -A && git commit -m "chore: 切换到自定义域名" && git push
 > GitHub Pages 要求自定义域名**在整个 GitHub Pages 体系内唯一**。
 > 免费共享子域（如 DuckDNS）实践中有绑定失败的案例，权威做法是用你能完全控制
 > DNS 的域名（学生 `.me` 或 `xxx.eu.org`）。
+
+---
 
 ## 关联的其它发布通道
 
@@ -262,7 +383,6 @@ Gitee 有对标 GitHub Pages 的 **Gitee Pages**，免费、服务器在国内�
 3. 本地推送并开通服务：
 
 ```bash
-cd F:/科技协会官网/github-pages
 git push gitee main                       # 推送镜像
 # 然后浏览器：仓库 → 服务 → Gitee Pages → 分支选 main、目录选 / → 点「启动」
 ```
@@ -272,14 +392,29 @@ git push gitee main                       # 推送镜像
 > SEO 口径：Gitee 只是镜像，**`canonical` 与 sitemap 仍统一指向 GitHub Pages**，
 > 不改域名相关文件，避免两站重复内容分散权重。
 
+---
+
 ## 内容来源与免责说明
 
 - 文字内容取自协会归档文件：社团章程、协会简介、社团注册登记表、科创月统计表、新闻稿原件。
 - 会员数据仅以聚合形式呈现（总数、学院分布），**不含任何学号或个人信息**。
 - 页内「入会登记」表单为纯前端生成文本，不向服务器发送数据。
-- 公告栏为静态文案，更新需改源码并重新发布。
+- 公告栏为静态文案，更新需改 `content/site.json` 并重新发布。
 - 联系方式取自《社团注册登记表》，用于公开咨询。
 
-## 版权
+### 数据口径说明
+
+赛事成绩表的「报名数」与「获奖数」分别以报名表原件、获奖名单原件为准。
+其中 3D 打印大赛（三赛道合计）获奖 149 人次、报名 148 人次，差 1 人次来自
+两份原件的统计口径差异——**按原件数值呈现，不作调整**，并在页面上以脚注注明。
+
+---
+
+## 许可与版权
+
+| 范围 | 许可 |
+|---|---|
+| 源代码与工具（`tools/`、`editor.html`、`.github/`） | [MIT](LICENSE) |
+| 内容与图片（`content/site.json`、`assets/img/`、页面文案） | [CC BY-NC-SA 4.0](LICENSE-CONTENT.md) |
 
 © 重庆工商大学科技协会 CTBU-STA

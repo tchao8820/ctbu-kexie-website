@@ -1,0 +1,22 @@
+# CTBU-STA 官网 robots.txt · 主机根目录版 · 由 tools/gen_seo.py 自动生成
+# 部署于子路径 /ctbu-kexie-website 下，搜索引擎只认主机根目录的 robots.txt。
+# 请把本文件放到主机根目录（GitHub 用户站仓库根目录 / 自定义域名根目录）。
+# 适用搜索引擎：Googlebot（谷歌）、Baiduspider（百度）、Bingbot（必应）、Sogou web spider（搜狗）、360Spider（360 搜索）、YandexBot（俄罗斯）、DuckDuckBot、Applebot
+
+User-agent: *
+Allow: /ctbu-kexie-website
+
+# 屏蔽无实际内容的路径
+Disallow: /ctbu-kexie-website/404.html
+Disallow: /ctbu-kexie-website/editor.html
+Disallow: /ctbu-kexie-website/tools/
+Disallow: /ctbu-kexie-website/dist/
+Disallow: /ctbu-kexie-website/build/
+Disallow: /ctbu-kexie-website/node_modules/
+Disallow: /ctbu-kexie-website/*.json$
+Disallow: /ctbu-kexie-website/*.md$
+Disallow: /ctbu-kexie-website/*.map$
+Disallow: /ctbu-kexie-website/*.log$
+
+# 站点地图
+Sitemap: https://tchao8820.github.io/ctbu-kexie-website/sitemap.xml

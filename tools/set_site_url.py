@@ -6,11 +6,13 @@ CTBU-STA 官网 · 一键切换站点域名
 绑定自定义域名（或从 github.io 换回）后，跑这一条命令即可把全部
 「域名相关」的位置一次性改干净：
 
-  · index.html  → <link rel="canonical">
-                → og:url / og:image / twitter:image
-                → JSON-LD 里的 @id / url / logo
-  · sitemap.xml → <loc> 全部条目
-  · robots.txt  → Sitemap: 行
+  · content/site.json → site.url / site.ogImage（以及任何内含旧域名的字段）
+  · index.html        → 由 content/site.json + tools/template.html 重新构建
+                      → <link rel="canonical">
+                      → og:url / og:image / twitter:image
+                      → JSON-LD 里的 @id / url / logo
+  · sitemap.xml       → <loc> 全部条目
+  · robots.txt        → Sitemap: 行
 
 顺带可选地生成 CNAME 文件（--write-cname）。
 
@@ -34,14 +36,13 @@ CTBU-STA 官网 · 一键切换站点域名
 """
 
 import argparse
+import json
 import os
-import re
 import subprocess
 import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-CANON_RE = re.compile(r'<link rel="canonical" href="([^"]+)"')
-OGURL_RE = re.compile(r'<meta property="og:url" content="([^"]+)"')
+DATA_PATH = os.path.join(ROOT, "content", "site.json")
 
 
 def norm(u: str) -> str:
@@ -53,12 +54,18 @@ def norm(u: str) -> str:
     return u.rstrip("/")
 
 
-def current_base(html: str) -> str:
-    for rx in (CANON_RE, OGURL_RE):
-        m = rx.search(html)
-        if m:
-            return m.group(1).rstrip("/")
-    return ""
+def replace_in(node, old: str, new: str, hits):
+    """把 JSON 树里所有出现旧域名的字符串换掉。"""
+    if isinstance(node, str):
+        if old and old in node:
+            hits.append(node)
+            return node.replace(old, new)
+        return node
+    if isinstance(node, list):
+        return [replace_in(v, old, new, hits) for v in node]
+    if isinstance(node, dict):
+        return {k: replace_in(v, old, new, hits) for k, v in node.items()}
+    return node
 
 
 def main():
@@ -72,38 +79,51 @@ def main():
 
     root = os.path.abspath(args.root)
     new_base = norm(args.site_url)
-    idx_path = os.path.join(root, "index.html")
+    data_path = os.path.join(root, "content", "site.json")
 
-    if not os.path.isfile(idx_path):
-        print(f"[错误] 找不到 {idx_path}", file=sys.stderr)
+    if not os.path.isfile(data_path):
+        print(f"[错误] 找不到 {data_path}", file=sys.stderr)
         return 2
 
-    html = open(idx_path, encoding="utf-8").read()
-    old_base = current_base(html)
+    with open(data_path, encoding="utf-8") as f:
+        data = json.load(f)
+
+    old_base = norm(data.get("site", {}).get("url", ""))
     if not old_base:
-        print("[错误] index.html 中未找到 canonical / og:url，无法确定当前域名", file=sys.stderr)
+        print("[错误] content/site.json 的 site.url 为空，无法确定当前域名", file=sys.stderr)
         return 3
+
+    hits = []
+    new_data = replace_in(data, old_base, new_base, hits)
 
     if old_base == new_base:
         print(f"[提示] 当前域名已是 {new_base}，无需修改。")
     else:
-        n = html.count(old_base)
         print(f"域名切换：{old_base}")
         print(f"       →  {new_base}")
-        print(f"index.html 中命中 {n} 处（canonical / og:url / og:image / twitter:image / JSON-LD）")
+        print(f"content/site.json 中命中 {len(hits)} 处：")
+        for h in hits:
+            print(f"   · {h[:150]}")
 
     if args.dry_run:
-        # 只统计将要改动的行，不落盘
-        for i, line in enumerate(html.splitlines(), 1):
-            if old_base and old_base in line:
-                print(f"   L{i}: {line.strip()[:150]}")
         print("\n[--dry-run] 未写入任何文件。")
         return 0
 
     if old_base != new_base:
-        html = html.replace(old_base, new_base)
-        open(idx_path, "w", encoding="utf-8", newline="\n").write(html)
-        print(f"已更新 {idx_path}")
+        with open(data_path, "w", encoding="utf-8", newline="\n") as f:
+            f.write(json.dumps(new_data, ensure_ascii=False, indent=2) + "\n")
+        print(f"已更新 {data_path}")
+
+    # ---- 重建 index.html ----
+    build = os.path.join(root, "tools", "build.py")
+    if os.path.isfile(build):
+        r = subprocess.run([sys.executable, build], capture_output=True, text=True)
+        print(r.stdout.strip() or r.stderr.strip())
+        if r.returncode != 0:
+            print("[错误] index.html 重建失败，已中止。", file=sys.stderr)
+            return 4
+    else:
+        print(f"[警告] 未找到 {build}，index.html 未重建！")
 
     # ---- 重新生成 sitemap.xml / robots.txt ----
     gen = os.path.join(root, "tools", "gen_seo.py")

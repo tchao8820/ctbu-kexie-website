@@ -1,0 +1,28 @@
+MIT License
+
+Copyright (c) 2024 重庆工商大学科技协会 (CTBU-STA)
+
+本许可适用于本仓库中的**源代码与工具脚本**，包括但不限于：
+`tools/` 目录下的全部脚本（build.py / render.js / check_site.py / gen_seo.py /
+set_site_url.py / template.html）、`editor.html`、`.github/workflows/` 下的 CI 配置，
+以及 `.nojekyll` 等构建配置文件。
+
+本许可**不适用于**页面内容与图片资源，其授权见 [LICENSE-CONTENT.md](LICENSE-CONTENT.md)。
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
